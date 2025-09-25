@@ -40,7 +40,6 @@ This will define operations like tautology, entailment, equivalence, consistency
   <li>Display</li>
 </ol>
 
-
 #### Task 3
 **User Stories**
 Single Formula Input:
@@ -70,4 +69,6 @@ Additional/Error Cases:
   <li>As a user, I want to system to prompt me if I try to enter an empty formula or no formulas at all so that I don't get empty or undefined results. </li>
   <li>As a user, I want to receive an error message if I input an invalid formula so that I know what went wrong. </li>
 <ol>
+
+
 
