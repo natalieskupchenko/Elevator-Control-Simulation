@@ -63,7 +63,7 @@ This will define operations like tautology, entailment, equivalence, consistency
       <li>As a user, I want to view counterexamples when operations fail so that I can understand where the issue lies. (e.g. when formulas are not equivalent, or consistent) </li>
     </ol>
   </li>
-    <li>Multiple Formula Input
+    <li>Additional/Error Input
     <ol>
       <li>As a user, I want to be able to clear the formulas I've entered so that I can start fresh with new formulas. </li>
       <li> As a user, I want to be able to name or label any formulas so that I can easily identify them in my KnowledgeBase. </li>
