@@ -4,7 +4,7 @@
 
 ### Phase 0
 
-#### Task 2
+#### Description of Project (P0T2)
 **What will the application do?**
 This application allows users to enter propositional logic formulas and analyze them using various logical operations. Users will also be able to visualize the propositional logic formulas through truth tables and semantic tableaus (trees). Users will be able to enter a single formula or multiple formulas. Users will then be able to operate on these formulas as specified below:
 
@@ -40,8 +40,7 @@ This will define operations like tautology, entailment, equivalence, consistency
   <li>Display</li>
 </ol>
 
-#### Task 3
-**User Stories**
+#### User Stories (P0T3)
 
 <ol>
   <li>Single Formula Input
