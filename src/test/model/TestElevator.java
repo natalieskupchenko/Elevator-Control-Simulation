@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
+//Test for Elevator class
 class TestElevator {
     private Elevator elevator;
 

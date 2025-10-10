@@ -3,12 +3,12 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+// Represents an elevator 
 public class Elevator {
     private int currentFloor; // The floor that the elevator is currently on.
     private int nextFloor; // The next floor that the elevator is going to.
     private int floorsInBuilding; // Total floors in building, where 1 is the ground floor (floorsInBuiding >= 1).
-                                  // Later phases
-    // can add basement floors.
+                                  // Later phases can add basement floors.
     private List<Integer> requestedFloors; // The list of requested floors. Later phases - can sort by order (least to
                                            // greatest or reverse).
     private Direction direction; // The direction the elevator is travelling: "UP", "DOWN", "IDLE"

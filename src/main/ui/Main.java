@@ -1,7 +1,8 @@
 package ui;
 
+//Instantiates a new ElevatorApp
 public class Main {
-    public static void main(String[] args) throws Exception {
-        System.out.println("Welcome to my project!");
+    public static void main(String[] args) {
+        new ElevatorApp();
     }
 }
