@@ -21,10 +21,10 @@ I am a mathematics student and I am very interested in optimization/logistics, a
 #### User Stories for Phase 1
 
 1. **Add a floor request**
-As a user, I want to press a button for a specific floor so that the elevator will go there.
+As a user, I want to press a button for a specific floor so that the elevator will go there. (User story: add multiple Xs to my Y)
 2. **Move elevator one floor at a time**</li>
 As a user, I want the elevator to move one floor at a time toward the requested floor, updating its direction so I know if it’s going up or down.
 3. **Arrive at requested floor and drop off**</li>
 As a user, I want the elevator to stop at my requested floor and remove that floor from the list of requested floors.
-4. **Track elevator direction and current floor**</li>
-As a user, I want to see what floor the elevator is on and whether it is going up, down, or idle.
+4. **Track elevator direction, current floor and requested floors**</li>
+As a user, I want to see what floor the elevator is on, what floors are requested for the elevator to go to, and whether the elevator is going up, down, or idle. (User story: list all Xs in Y)
