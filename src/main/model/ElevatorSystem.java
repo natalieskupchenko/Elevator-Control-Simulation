@@ -21,51 +21,43 @@ public ElevatorSystem(int numFloors, int numElevators, int maxCapacity) {
     }
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// REQUIRES: floor >= 1 && floor <= numFloors
+// MODIFIES: floorCallsUp, floorCallsDown
+// EFFECTS: adds a call for an elevator at the specified floor and direction
 public void callElevator(int floor, Direction direction) {
 
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// REQUIRES: floor >= 1 && floor <= numFloors
+// MODIFIES: floorCallsUp, floorCallsDown
+// EFFECTS: removes a call for an elevator at the specified floor and direction
 public void removeFloorCall(int floor, Direction direction) {
 
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// EFFECTS: returns the list of elevators
 public void getElevators() {
 
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// EFFECTS: returns the number of floors in the building
 public void getNumFloors() {
 
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// EFFECTS: returns the list of floors where there was a call to go up
 public void getFloorCallsUp() {
 
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// EFFECTS: returns the list of floors where there was a call to go down
 public void getFloorCallsDown() {
 
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// REQUIRES: index >= 0 && index < elevators.size() 
+// MODIFIES: elevators[index]
+// EFFECTS: sets the inService status of the elevator at the given index
 public void setElevatorInService(int index, boolean inService){
 
 }
