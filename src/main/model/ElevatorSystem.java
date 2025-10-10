@@ -62,9 +62,9 @@ public void setElevatorInService(int index, boolean inService){
 
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS:
+// REQUIRES: floor is between 1 and numFloors, direction is not null
+// EFFECTS: returns an Elevator that can respond to the request (preferably idle); 
+//          if none are idle, returns the first elevator
 public Elevator assignElevator(int floor, Direction direction) {
     for (Elevator e : elevators) {
         if (e.isInService() && e.getDirection() == Direction.IDLE) {
@@ -74,9 +74,8 @@ public Elevator assignElevator(int floor, Direction direction) {
     return elevators.get(0); // fallback 
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS:
+// EFFECTS: returns a string describing the status of all elevators, 
+///         including current floor, direction, doors, and load
 public String getStatus() {
     StringBuilder status = new StringBuilder();
     for (int i = 0; i < elevators.size(); i++) {
@@ -92,7 +91,7 @@ public String getStatus() {
     return status.toString();
 }
 
-// MODIFIES: elevators
+// MODIFIES: each elevator elevators
 // EFFECTS: moves each elevator one step towards its next requested floor
 public void step() {
     for (Elevator e : elevators) {
@@ -100,25 +99,24 @@ public void step() {
     }
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS:
+// REQUIRES: maxCapacity > 0
+// MODIFIES: this.elevators
+// EFFECTS: adds a new Elevator with the specified capacity to the system
 public void addElevator(int maxCapacity) {
     elevators.add(new Elevator(maxCapacity));
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS:
+// REQUIRES: index is a valid index in elevators
+// MODIFIES: this.elevators
+// EFFECTS: removes the elevator at the specified index from the system
 public void removeElevator(int index) {
     if (index >= 0 && index < elevators.size()) {
         elevators.remove(index);
     }
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS:
+// MODIFIES: this.numFloors
+// EFFECTS: increments the number of floors in the system by 1
 public void addFloor() {
     numFloors++;
 }
