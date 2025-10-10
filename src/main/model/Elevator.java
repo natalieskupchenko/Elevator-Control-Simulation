@@ -14,6 +14,11 @@ public class Elevator {
     private boolean doorsOpen; // Returns true if doors are open, false if doors are closed.
     private boolean inService; // Returns true if elevator is in service, false if elevator is not in service. 
 
+
+// REQUIRES: maxCapacity > 0
+// EFFECTS: creates an Elevator starting at floor 1 with zero load, 
+//          doors closed, inService false, IDLE direction, and empty 
+//          requestedFloors list    
 public Elevator (int maxCapacity) {
     this.currentFloor = 1; 
     this.maxCapacity = maxCapacity;
@@ -24,137 +29,115 @@ public Elevator (int maxCapacity) {
     this.direction = Direction.IDLE;
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// REQUIRES: 1<= floor <= number of floors in building
+// MODIFIES: requestedFloors
+// EFFECTS: adds the given floor to the list of requested floors if not already present
 public void addFloorRequest(int floor) {
 
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// REQUIRES: requestedFloors is not empty
+// MODIFIES: currentFloor, direction, requestedFloors
+// EFFECTS: moves the elevator one floor towards next requested floor,
+//          updates direction accordingly
 public void moveToNextFloor() {
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// REQUIRES: requestedFloors contains currentFloor
+// MODIFIES: requestedFloors, currentLoad
+// EFFECTS: drops off passengers at current floor and removes current floor,
+//          removes current floor from requestedFloors, and reduces currentLoad as needed
 public void dropOff() {
 
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// REQUIRES: currentLoad + weightChange <= maxCapacity
+// MODIFIES: currentLoad
+// EFFECTS: increases or decreases the current load by weightChange
 public void updateLoad(int weightChange) {
 
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// REQUIRES: givenDirection != null
+// MODIFIES: direction
+// EFFECTS: sets the elevator's direction to the given direction
 public void changeDirection(Direction givenDirection) {
 
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// MODIFIES: doorsOpen
+// EFFECTS: sets doorsOpen to true
 public void openDoors() {
     doorsOpen = true;
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+
+// MODIFIES: doorsOpen
+// EFFECTS: sets doorsOpen to false
 public void closeDoors() {
     doorsOpen = false;
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
-public void hasRequests() {
 
-}
-
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
-public void removeCurrentRequest() {
-
-}
-
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
-public boolean hasCapacityForUser() {
+// EFFECTS: returns true if there are any requested floors, false otherwise 
+public boolean hasRequests() {
     return false;
+
 }
+
+// REQUIRES: requestedFloors is not empty
+// MODIFIES: requestedFloors
+// EFFECTS: removes the current floor from the requestedFloors list
+public void removeCurrentRequest() {
+}
+
 
 // Getters and Setters
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// MODIFIES: inService
+// EFFECTS: sets whether the elevator is in service
 public void setInService(boolean inService) {
     this.inService = inService;
 }
 
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// REQUIRES: requestedFloors is not empty
+// EFFECTS: returns next requested floor without removing it
 public void getNextRequestedFloor() {
 
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// EFFECTS: returns current floor of the elevator
 public int getCurrentFloor() {
     return currentFloor;
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// EFFECTS: returns current load of the elevator
 public int getCurrentLoad() {
     return currentLoad;
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// EFFECTS: returns true if doors are open, false otherwise
 public boolean isDoorsOpen() {
     return doorsOpen;
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// EFFECTS: returns true if elevator is in service, false otherwise
 public boolean isInService() {
     return inService;
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// EFFECTS: returns list of requested floors
 public List<Integer> getRequestedFloors() {
     return requestedFloors;
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// EFFECTS: returns current direction of elevator
 public Direction getDirection() {
     return direction;
 }
 
-// REQUIRES:
-// MODIFIES:
-// EFFECTS: 
+// EFFECTS: returns maximum capacity of elevator
 public int getMaxCapacity() {
     return maxCapacity;
 }
