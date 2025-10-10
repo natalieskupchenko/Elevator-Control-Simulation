@@ -20,11 +20,11 @@ I am a mathematics student and I am very interested in optimization/logistics, a
 
 #### User Stories for Phase 1
 
-1. **Create Elevator System**
-As a user, I want to create an ElevatorSystem with a specific number of floors and elevators so that I can customize the building before using the elevators.
-2. **Add a floor request to an elevator**</li>
-As a user, I want to add a floor request to an elevator from inside the elevator so I can travel to my desired floor.  
-3. **Call an elevator from a floor**</li>
-As a user, I want to call an elevator from a floor to go up or down so that the system assigns an appropriate elevator to pick me up.
-4. **View the status of all elevators**</li>
-As a user, I want to see the status of all elevators (current floor, direction, door state, and current load) so that I can know what each elevator is doing.
+1. **Add a floor request**
+As a user, I want to press a button for a specific floor so that the elevator will go there.
+2. **Move elevator one floor at a time**</li>
+As a user, I want the elevator to move one floor at a time toward the requested floor, updating its direction so I know if it’s going up or down.
+3. **Arrive at requested floor and drop off**</li>
+As a user, I want the elevator to stop at my requested floor and remove that floor from the list of requested floors.
+4. **Track elevator direction and current floor**</li>
+As a user, I want to see what floor the elevator is on and whether it is going up, down, or idle.
