@@ -38,9 +38,9 @@ public class ElevatorApp {
     public void runApp() {
         boolean running = true;
         while (running) {
-            System.out.println("Requested Floors: " + elevator.getRequestedFloors() +
-                    ", Current Floor: " + elevator.getCurrentFloor() +
-                    ", Floors in building: " + elevator.getFloorsInBuilding());
+            System.out.println("Requested Floors: " + elevator.getRequestedFloors() 
+                    + ", Current Floor: " + elevator.getCurrentFloor() 
+                    + ", Floors in building: " + elevator.getFloorsInBuilding());
             System.out.println("\nSelect an option:");
             System.out.println("1. Add floor request");
             System.out.println("2. Move elevator (step-by-step)");
