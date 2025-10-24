@@ -201,4 +201,26 @@ class TestElevator {
         assertEquals(5, elevator.getFloorsInBuilding()); // building of 5 floors
         assertEquals(6, new Elevator(6).getFloorsInBuilding());
     }
+
+    @Test
+    void testAddInvalidFloorTooHigh() {
+        Elevator elevator = new Elevator(5); // Building has 5 floors
+        elevator.addFloorRequest(10); // Invalid floor
+        assertTrue(elevator.getRequestedFloors().isEmpty()); // Should not add
+    }
+
+    @Test
+    void testAddInvalidFloorZeroOrNegative() {
+        Elevator elevator = new Elevator(5);
+        elevator.addFloorRequest(0); // Invalid
+        elevator.addFloorRequest(-3); // Invalid
+        assertTrue(elevator.getRequestedFloors().isEmpty());
+    }
+
+    @Test
+    void testAddCurrentFloorIgnored() {
+        Elevator elevator = new Elevator(5);
+        elevator.addFloorRequest(1); // Already on floor 1
+        assertTrue(elevator.getRequestedFloors().isEmpty());
+    }
 }
