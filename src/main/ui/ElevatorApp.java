@@ -45,46 +45,63 @@ public class ElevatorApp {
         return floors;
     }
 
-    // Main loop
+    // EFFECTS: runs the main menu loop for the app
     public void runApp() {
         boolean running = true;
         while (running) {
-            System.out.println("Requested Floors: " + elevator.getRequestedFloors()
-                    + ", Current Floor: " + elevator.getCurrentFloor()
-                    + ", Floors in building: " + elevator.getFloorsInBuilding());
-            System.out.println("\nSelect an option:");
-            System.out.println("1. Add floor request");
-            System.out.println("2. Move elevator step-by-step");
-            System.out.println("3. Save elevator state to file");
-            System.out.println("4. Load elevator state from file");
-            System.out.println("5. View elevator current state");
-            System.out.println("6. Quit");
+            displayMenu();
+            running = processUserInput();
+        }
+    }
 
-            String choice = scanner.nextLine();
+    // EFFECTS: prints the main menu
+    private void displayMenu() {
+        System.out.println("\nRequested Floors: " + elevator.getRequestedFloors()
+                + ", Current Floor: " + elevator.getCurrentFloor()
+                + ", Floors in building: " + elevator.getFloorsInBuilding());
 
-            switch (choice) {
-                case "1":
-                    addFloorRequest();
-                    break;
-                case "2":
-                    moveElevator();
-                    break;
-                case "3":
-                    saveElevator();
-                    break;
-                case "4":
-                    loadElevator();
-                    break;
-                case "5":
-                    viewState();
-                    break;
-                case "6":
-                    System.out.println("Exiting elevator simulation.");
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Invalid selection. Try again.");
-            }
+        System.out.println("\nSelect an option:");
+        System.out.println("1. Add floor request");
+        System.out.println("2. Move elevator step-by-step");
+        System.out.println("3. Save elevator state to file");
+        System.out.println("4. Load elevator state from file");
+        System.out.println("5. View elevator current state");
+        System.out.println("6. Quit");
+    }
+
+    // MODIFIES: this
+    // EFFECTS: processes user selection and returns whether app should continue
+    // running
+    private boolean processUserInput() {
+        String choice = scanner.nextLine();
+        handleMenuChoice(choice);
+        return !choice.equals("6");
+    }
+
+    // MODIFIES: this
+    // EFFECTS: executes the command chosen by user
+    private void handleMenuChoice(String choice) {
+        switch (choice) {
+            case "1":
+                addFloorRequest();
+                break;
+            case "2":
+                moveElevator();
+                break;
+            case "3":
+                saveElevator();
+                break;
+            case "4":
+                loadElevator();
+                break;
+            case "5":
+                viewState();
+                break;
+            case "6":
+                System.out.println("Exiting elevator simulation.");
+                break;
+            default:
+                System.out.println("Invalid selection. Try again.");
         }
     }
 
