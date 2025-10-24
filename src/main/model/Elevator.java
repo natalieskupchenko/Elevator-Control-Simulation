@@ -3,22 +3,55 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import persistence.Writable;
+
 // Represents an elevator 
-public class Elevator {
+public class Elevator implements Writable {
     private int currentFloor; // The floor that the elevator is currently on.
     private int nextFloor; // The next floor that the elevator is going to.
-    private int floorsInBuilding; // Total floors in building, where 1 is the ground floor (floorsInBuiding >= 1). 
-    private List<Integer> requestedFloors; // The list of requested floors. 
+    private int floorsInBuilding; // Total floors in building, where 1 is the ground floor (floorsInBuiding >= 1).
+    private List<Integer> requestedFloors; // The list of requested floors.
     private Direction direction; // The direction the elevator is travelling: "UP", "DOWN", "IDLE"
 
     // REQUIRES: floorsInBuilding >= 1
-    // EFFECTS: creates an Elevator starting at floor 1 with zero load,
-    // IDLE direction, and empty requestedFloors list
+    // EFFECTS: creates an Elevator starting at floor 1 with IDLE direction
     public Elevator(int floorsInBuilding) {
         this.currentFloor = 1;
         this.floorsInBuilding = floorsInBuilding;
         this.requestedFloors = new ArrayList<>();
         this.direction = Direction.IDLE;
+    }
+
+    // REQUIRES: 1 <= currentFloor <= floorsInBuilding
+    // EFFECTS: constructs elevator with full state (used for loading from JSON)
+    public Elevator(int floorsInBuilding, int currentFloor, Direction direction, List<Integer> requestedFloors) {
+        this.floorsInBuilding = floorsInBuilding;
+        this.currentFloor = currentFloor;
+        this.direction = direction;
+        this.requestedFloors = new ArrayList<>(requestedFloors);
+    }
+
+    // EFFECTS: returns this elevator as a JSON object
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("currentFloor", currentFloor);
+        json.put("floorsInBuilding", floorsInBuilding);
+        json.put("direction", direction.toString());
+        json.put("requestedFloors", requestedFloorsToJson());
+        return json;
+    }
+
+    // EFFECTS: returns requestedFloors as JSON array
+    private JSONArray requestedFloorsToJson() {
+        JSONArray jsonArray = new JSONArray();
+        for (Integer floor : requestedFloors) {
+            jsonArray.put(floor);
+        }
+        return jsonArray;
     }
 
     // REQUIRES: 1<= floor and <= number of floors in building
@@ -60,12 +93,12 @@ public class Elevator {
         if (requestedFloors.isEmpty()) {
             direction = Direction.IDLE;
         } else if (floor > getNextRequestedFloor()) {
-            direction = Direction.DOWN; 
+            direction = Direction.DOWN;
         } else {
             direction = Direction.UP;
         }
     }
-        
+
     // REQUIRES: requestedFloors is not empty
     // EFFECTS: returns next requested floor without removing it
     public int getNextRequestedFloor() {
@@ -76,8 +109,8 @@ public class Elevator {
     // EFFECTS: returns current floor of the elevator
     public int getCurrentFloor() {
         return currentFloor;
-    } 
-    
+    }
+
     // EFFECTS: returns list of requested floors
     public List<Integer> getRequestedFloors() {
         return requestedFloors;
