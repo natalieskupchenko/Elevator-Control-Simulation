@@ -19,7 +19,7 @@ public class JsonWriterTest extends JsonTest {
     void testWriterInvalidFile() {
         try {
             Elevator e = new Elevator(5);
-            e.addFloorRequest(3); // 
+            e.addFloorRequest(3); //
             JsonWriter writer = new JsonWriter("./data/my\0illegal:fileName.json");
             writer.open();
             fail("IOException was expected");
@@ -49,6 +49,27 @@ public class JsonWriterTest extends JsonTest {
             assertEquals(2, loaded.getRequestedFloors().size());
             assertTrue(loaded.getRequestedFloors().contains(2));
             assertTrue(loaded.getRequestedFloors().contains(7));
+        } catch (IOException e) {
+            fail("Exception should not have been thrown");
+        }
+    }
+
+    @Test
+    void testWriterEmptyElevator() {
+        try {
+            Elevator e = new Elevator(5); // no requests added
+            JsonWriter writer = new JsonWriter("./data/testWriterEmptyElevator.json");
+            writer.open();
+            writer.write(e);
+            writer.close();
+
+            JsonReader reader = new JsonReader("./data/testWriterEmptyElevator.json");
+            Elevator loaded = reader.read();
+
+            assertEquals(5, loaded.getFloorsInBuilding());
+            assertEquals(1, loaded.getCurrentFloor()); // default is 1
+            assertTrue(loaded.getRequestedFloors().isEmpty());
+            assertEquals(Direction.IDLE, loaded.getDirection());
         } catch (IOException e) {
             fail("Exception should not have been thrown");
         }

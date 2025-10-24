@@ -45,4 +45,26 @@ public class JsonReaderTest extends JsonTest {
             fail("Couldn't read from file");
         }
     }
+
+    @Test
+void testReaderEmptyElevator() {
+    try {
+        // create empty elevator file manually
+        Elevator e = new Elevator(4);  // no requests
+        JsonWriter writer = new JsonWriter("./data/testReaderEmptyElevator.json");
+        writer.open();
+        writer.write(e);
+        writer.close();
+
+        JsonReader reader = new JsonReader("./data/testReaderEmptyElevator.json");
+        Elevator loaded = reader.read();
+
+        assertEquals(4, loaded.getFloorsInBuilding());
+        assertEquals(1, loaded.getCurrentFloor());
+        assertTrue(loaded.getRequestedFloors().isEmpty());
+    } catch (IOException e) {
+        fail("Couldn't read from file");
+    }
+}
+
 }
