@@ -54,11 +54,17 @@ public class Elevator implements Writable {
         return jsonArray;
     }
 
-    // REQUIRES: 1<= floor and <= number of floors in building
-    // MODIFIES: requestedFloors
-    // EFFECTS: adds the given floor to the list of requested floors if not already
-    // present
+    // MODIFIES: this
+    // EFFECTS: if 1 <= floor <= floorsInBuilding and floor is not the current floor
+    // and not already in requestedFloors, adds it to requestedFloors;
+    // otherwise, does nothing
     public void addFloorRequest(int floor) {
+        if (floor < 1 || floor > floorsInBuilding) {
+            return;
+        }
+        if (floor == currentFloor) {
+            return;
+        }
         if (!requestedFloors.contains(floor)) {
             requestedFloors.add(floor);
         }
