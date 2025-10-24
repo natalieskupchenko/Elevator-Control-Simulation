@@ -19,10 +19,11 @@ public class JsonWriterTest extends JsonTest {
     void testWriterInvalidFile() {
         try {
             Elevator e = new Elevator(5);
+            e.addFloorRequest(3); // 
             JsonWriter writer = new JsonWriter("./data/my\0illegal:fileName.json");
             writer.open();
             fail("IOException was expected");
-        } catch (IOException e) {
+        } catch (IOException ex) {
             // expected
         }
     }
