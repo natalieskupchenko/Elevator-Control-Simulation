@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 //Test for Elevator class
+@ExcludeFromJacocoGeneratedReport
 class TestElevator {
     private Elevator elevator;
 

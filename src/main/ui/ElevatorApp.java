@@ -1,10 +1,12 @@
 package ui;
 
 import model.Elevator;
+import model.ExcludeFromJacocoGeneratedReport;
 
 import java.util.Scanner;
 
 // User interaction for Elevator
+@ExcludeFromJacocoGeneratedReport
 public class ElevatorApp {
 
     private Elevator elevator;
