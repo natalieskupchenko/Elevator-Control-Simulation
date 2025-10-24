@@ -28,3 +28,10 @@ As a user, I want the elevator to move one floor at a time toward the requested 
 As a user, I want the elevator to stop at my requested floor and remove that floor from the list of requested floors.
 4. **Track elevator direction, current floor and requested floors**</li>
 As a user, I want to see what floor the elevator is on, what floors are requested for the elevator to go to, and whether the elevator is going up, down, or idle. (User story: list all Xs in Y)
+
+#### User Stories for Phase 2
+
+1. **Option to save entire state of application to file**
+As a user, I want the option to be able to save the current state of the elevator to file (current floor, requested floors, direction).
+2. **Option to reload state from file and resume exactly where they left off in earlier file**
+As a user, I want the option to reload a previously saved elevator from file and resume the elevator simulation of the selected instance at that exact state.
