@@ -2,9 +2,7 @@
 
 ## By: Natalie Skupchenko
 
-#### Acknowledgements
-This project references and adapts parts of the JsonSerializationDemo from CPSC 210 for JSON persistence (JsonReader, JsonWriter, and Writable patterns).
-
+### Phase 0 
 #### Description of Project for Phase 0
 **What will the application do?**</li>
 This application will allow the user to simulate the operation of elevators in a building. The user will be able to call an elevator from a floor, select a floor from inside the elevator, hold the door open, close the door, and press a button to call for 911. The user will be able to create a building and specify the number of elevators and floors. The user will also be able to temporarily close an elevator for maintenance, remove an elevator completely, add a new elevator or add a new floor. The user will be able to access the list of calls to the elevator from various floors and will be able to access the list of floors pressed from inside the elevator. The user will also be able to access the current weight inside the elevator and the maximum capacity (in kg).
@@ -19,8 +17,9 @@ I am a mathematics student and I am very interested in optimization/logistics, a
 1. **Elevator** represents a single elevator. 
 1. **ElevatorSystem** represents a collection of elevators in the building.
 
-#### User Stories for Phase 1
+### Phase 1
 
+#### User Stories for Phase 1 (made in Phase 0)
 1. **Add a floor request**
 As a user, I want to press a button for a specific floor so that the elevator will go there. (User story: add multiple Xs to my Y)
 2. **Move elevator one floor at a time**</li>
@@ -30,9 +29,33 @@ As a user, I want the elevator to stop at my requested floor and remove that flo
 4. **Track elevator direction, current floor and requested floors**</li>
 As a user, I want to see what floor the elevator is on, what floors are requested for the elevator to go to, and whether the elevator is going up, down, or idle. (User story: list all Xs in Y)
 
+### Phase 2
+
 #### User Stories for Phase 2
 
 1. **Option to save entire state of application to file**
 As a user, I want the option to be able to save the current state of the elevator to file (current floor, requested floors, direction).
 2. **Option to reload state from file and resume exactly where they left off in earlier file**
 As a user, I want the option to reload a previously saved elevator from file and resume the elevator simulation of the selected instance at that exact state.
+
+This program uses JSON persistence to store the elevator state. When the user chooses the Save option, the elevator is saved to: ./data/elevator.json
+Here is an example saved file: 
+
+{
+
+    "currentFloor": 3, 
+
+    "floorsInBuilding": 10,
+
+    "direction": "UP",
+
+    "requestedFloors": [5, 8]
+  
+}
+
+The user can later choose Load to restore this exact state.
+The Elevator class implements a toJson() method so its state can be written to JSON. The JsonWriter class writes the elevator data to a file. The JsonReader class loads the elevator from JSON.
+
+
+#### Acknowledgements
+This project references and adapts parts of the JsonSerializationDemo from CPSC 210 for JSON persistence (JsonReader, JsonWriter, and Writable patterns).
