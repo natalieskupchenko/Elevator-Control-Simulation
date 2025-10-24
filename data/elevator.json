@@ -1,0 +1,6 @@
+{
+    "requestedFloors": [3],
+    "currentFloor": 1,
+    "floorsInBuilding": 10,
+    "direction": "IDLE"
+}
