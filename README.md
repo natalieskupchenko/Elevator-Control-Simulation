@@ -2,9 +2,10 @@
 
 ## By: Natalie Skupchenko
 
-### Phase 0
+#### Acknowledgements
+This project references and adapts parts of the JsonSerializationDemo from CPSC 210 for JSON persistence (JsonReader, JsonWriter, and Writable patterns).
 
-#### Description of Project 
+#### Description of Project for Phase 0
 **What will the application do?**</li>
 This application will allow the user to simulate the operation of elevators in a building. The user will be able to call an elevator from a floor, select a floor from inside the elevator, hold the door open, close the door, and press a button to call for 911. The user will be able to create a building and specify the number of elevators and floors. The user will also be able to temporarily close an elevator for maintenance, remove an elevator completely, add a new elevator or add a new floor. The user will be able to access the list of calls to the elevator from various floors and will be able to access the list of floors pressed from inside the elevator. The user will also be able to access the current weight inside the elevator and the maximum capacity (in kg).
 
