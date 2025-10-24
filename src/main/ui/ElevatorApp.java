@@ -3,6 +3,10 @@ package ui;
 import model.Elevator;
 import model.ExcludeFromJacocoGeneratedReport;
 
+import persistence.JsonReader;
+import persistence.JsonWriter;
+import java.io.IOException;
+
 import java.util.Scanner;
 
 // User interaction for Elevator
@@ -11,11 +15,16 @@ public class ElevatorApp {
 
     private Elevator elevator;
     private Scanner scanner;
+    private static final String JSON_STORE = "./data/elevator.json";
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
     public ElevatorApp() {
         scanner = new Scanner(System.in);
         int numFloors = askUserForNumberOfFloors();
         elevator = new Elevator(numFloors);
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
         runApp();
     }
 
@@ -40,13 +49,16 @@ public class ElevatorApp {
     public void runApp() {
         boolean running = true;
         while (running) {
-            System.out.println("Requested Floors: " + elevator.getRequestedFloors() 
-                    + ", Current Floor: " + elevator.getCurrentFloor() 
+            System.out.println("Requested Floors: " + elevator.getRequestedFloors()
+                    + ", Current Floor: " + elevator.getCurrentFloor()
                     + ", Floors in building: " + elevator.getFloorsInBuilding());
             System.out.println("\nSelect an option:");
             System.out.println("1. Add floor request");
-            System.out.println("2. Move elevator (step-by-step)");
-            System.out.println("3. Quit");
+            System.out.println("2. Move elevator step-by-step");
+            System.out.println("3. Save elevator state to file");
+            System.out.println("4. Load elevator state from file");
+            System.out.println("5. View elevator current state");
+            System.out.println("6. Quit");
 
             String choice = scanner.nextLine();
 
@@ -58,9 +70,20 @@ public class ElevatorApp {
                     moveElevator();
                     break;
                 case "3":
+                    saveElevator();
+                    break;
+                case "4":
+                    loadElevator();
+                    break;
+                case "5":
+                    viewState();
+                    break;
+                case "6":
                     System.out.println("Exiting elevator simulation.");
                     running = false;
                     break;
+                default:
+                    System.out.println("Invalid selection. Try again.");
             }
         }
     }
@@ -77,9 +100,35 @@ public class ElevatorApp {
     // Add a floor request
     private void addFloorRequest() {
         System.out.print("Enter floor number to request (1 to " + elevator.getFloorsInBuilding() + "): ");
-        int floor = Integer.parseInt(scanner.nextLine());
-        elevator.addFloorRequest(floor);
-        System.out.println("Floor " + floor + " requested.");
+        String input = scanner.nextLine().trim();
+
+        try {
+            int floor = Integer.parseInt(input);
+
+            // Validate floor input
+            if (floor < 1 || floor > elevator.getFloorsInBuilding()) {
+                System.out.println("Invalid floor. Please enter a number between 1 and "
+                        + elevator.getFloorsInBuilding() + ".");
+                return;
+            }
+
+            if (floor == elevator.getCurrentFloor()) {
+                System.out.println("You're already on that floor.");
+                return;
+            }
+
+            if (elevator.getRequestedFloors().contains(floor)) {
+                System.out.println("That floor is already in the request list.");
+                return;
+            }
+
+            // Valid input → add to request queue
+            elevator.addFloorRequest(floor);
+            System.out.println("Floor " + floor + " added to request list.");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a whole number.");
+        }
     }
 
     // Move the elevator step-by-step
@@ -89,17 +138,17 @@ public class ElevatorApp {
             System.out.println("[Before Move]");
             displayElevatorState();
 
-            // Move one floor
-            elevator.move();
+            // Store next target before moving
+            int next = elevator.getNextRequestedFloor();
 
-            // Display state after move
+            elevator.move(); // dropOff() happens inside here if it arrives
+
             System.out.println("[After Move]");
             displayElevatorState();
 
-            // Drop off if at requested floor
-            if (elevator.getRequestedFloors().contains(elevator.getCurrentFloor())) {
-                System.out.println("==> Elevator arrived at floor " + elevator.getCurrentFloor());
-                elevator.dropOff(elevator.getCurrentFloor());
+            // If elevator reached target floor
+            if (elevator.getCurrentFloor() == next) {
+                System.out.println("==> Elevator arrived at floor " + next);
             }
 
             try {
@@ -108,6 +157,41 @@ public class ElevatorApp {
                 Thread.currentThread().interrupt(); // Restore interrupt flag
             }
         }
+    }
+
+    // EFFECTS: saves the current elevator state to file
+    private void saveElevator() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(elevator);
+            jsonWriter.close();
+            System.out.println("Saved current elevator state to " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to save file: " + JSON_STORE);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads elevator from file
+    private void loadElevator() {
+        try {
+            elevator = jsonReader.read();
+            System.out.println("Loaded elevator state from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to load file: " + JSON_STORE);
+        }
+    }
+
+    // EFFECTS: prints the current elevator state
+    private void viewState() {
+        System.out.println("\n===== Elevator Status =====");
+        System.out.println("Current Floor: " + elevator.getCurrentFloor());
+        System.out.println("Direction: " + elevator.getDirection());
+        System.out.println("Requested Floors: " + elevator.getRequestedFloors());
+        System.out.println("Floors in Building: " + elevator.getFloorsInBuilding());
+        System.out.println("\nPress any key then Enter to return to main menu...");
+
+        scanner.nextLine(); // pause
     }
 
     public static void main(String[] args) {
