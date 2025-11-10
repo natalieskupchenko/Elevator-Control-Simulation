@@ -21,10 +21,25 @@ public class ElevatorApp {
 
     public ElevatorApp() {
         scanner = new Scanner(System.in);
-        int numFloors = askUserForNumberOfFloors();
-        elevator = new Elevator(numFloors);
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
+
+        System.out.println("Welcome to Elevator Simulation.");
+        System.out.println("1. Create a new elevator");
+        System.out.println("2. Load saved elevator");
+        String choice = scanner.nextLine();
+
+        if (choice.equals("1")) {
+            int numFloors = askUserForNumberOfFloors();
+            elevator = new Elevator(numFloors);
+        } else if (choice.equals("2")) {
+            loadElevator();
+        } else {
+            System.out.println("Invalid. Creating new elevator by default.");
+            int numFloors = askUserForNumberOfFloors();
+            elevator = new Elevator(numFloors);
+        }
+
         runApp();
     }
 
