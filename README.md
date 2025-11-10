@@ -60,7 +60,7 @@ The Elevator class implements a toJson() method so its state can be written to J
 
 #### Optional User Stories for Phase 3
 
-1. **Updating menu** </li>
+1. **Add an opening menu with option to load previous elevator** </li>
 As a user, after running the program, I want the first menu I see to have options to either load a previous elevator or create a new elevator.
 2. **Sorting floors based on direction** </li>
 As a user, I want the elevator to sort the requested floors depending on the current direction of the elevator. If there are floors pressed in two opposite directions, then the elevator should go to the first floor pressed, and then continue going to the next floors. 
