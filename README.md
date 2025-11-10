@@ -20,7 +20,7 @@ I am a mathematics student and I am very interested in optimization/logistics, a
 ### Phase 1
 
 #### User Stories for Phase 1 (made in Phase 0)
-1. **Add a floor request**
+1. **Add a floor request** </li>
 As a user, I want to press a button for a specific floor so that the elevator will go there. (User story: add multiple Xs to my Y)
 2. **Move elevator one floor at a time**</li>
 As a user, I want the elevator to move one floor at a time toward the requested floor, updating its direction so I know if it’s going up or down.
@@ -33,9 +33,9 @@ As a user, I want to see what floor the elevator is on, what floors are requeste
 
 #### User Stories for Phase 2
 
-1. **Option to save entire state of application to file**
+1. **Option to save entire state of application to file** </li>
 As a user, I want the option to be able to save the current state of the elevator to file (current floor, requested floors, direction).
-2. **Option to reload state from file and resume exactly where they left off in earlier file**
+2. **Option to reload state from file and resume exactly where they left off in earlier file** </li>
 As a user, I want the option to reload a previously saved elevator from file and resume the elevator simulation of the selected instance at that exact state.
 
 This program uses JSON persistence to store the elevator state. When the user chooses the Save option, the elevator is saved to: ./data/elevator.json
@@ -60,8 +60,10 @@ The Elevator class implements a toJson() method so its state can be written to J
 
 #### Optional User Stories for Phase 3
 
-1. As a user, after running the program, I want the first menu I see to have options to either load a previous elevator or create a new elevator.
-2. As a user, I want the elevator to sort the requested floors depending on the current direction of the elevator. If there are floors pressed in two opposite directions, then the elevator should go to the first floor pressed, and then continue going to the next floors. 
+1. **Updating menu** </li>
+As a user, after running the program, I want the first menu I see to have options to either load a previous elevator or create a new elevator.
+2. **Sorting floors based on direction** </li>
+As a user, I want the elevator to sort the requested floors depending on the current direction of the elevator. If there are floors pressed in two opposite directions, then the elevator should go to the first floor pressed, and then continue going to the next floors. 
 
 #### Acknowledgements
 This project references and adapts parts of the JsonSerializationDemo from CPSC 210 for JSON persistence (JsonReader, JsonWriter, and Writable patterns).
