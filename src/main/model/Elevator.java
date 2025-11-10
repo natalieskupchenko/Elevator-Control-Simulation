@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -60,13 +61,19 @@ public class Elevator implements Writable {
     // otherwise, does nothing
     public void addFloorRequest(int floor) {
         if (floor < 1 || floor > floorsInBuilding) {
-            return;
+            return; // ignore invalid floor
         }
-        if (floor == currentFloor) {
-            return;
+        if (floor == currentFloor || requestedFloors.contains(floor)) {
+            return; // ignore duplicates or current floor
         }
-        if (!requestedFloors.contains(floor)) {
-            requestedFloors.add(floor);
+
+        requestedFloors.add(floor);
+
+        // Sorting based on direction
+        if (direction == Direction.UP || direction == Direction.IDLE) {
+            requestedFloors.sort(Integer::compareTo); // ascending order
+        } else {
+            requestedFloors.sort(Collections.reverseOrder()); // descending order
         }
     }
 

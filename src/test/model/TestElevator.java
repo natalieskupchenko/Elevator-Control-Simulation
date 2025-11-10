@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 //Test for Elevator class
-@ExcludeFromJacocoGeneratedReport
 class TestElevator {
     private Elevator elevator;
 
@@ -17,6 +16,7 @@ class TestElevator {
         elevator = new Elevator(5); // 5-floor building for testing
     }
 
+    // testing constructor
     @Test
     void testConstructor() {
         assertEquals(1, elevator.getCurrentFloor());
@@ -26,180 +26,45 @@ class TestElevator {
     }
 
     @Test
-    void testAddFloorRequest() {
-        elevator.addFloorRequest(3);
+    void testAlternateConstructor() {
+        List<Integer> requests = List.of(2, 5);
+        Elevator e = new Elevator(10, 4, Direction.DOWN, requests);
 
-        List<Integer> requested = elevator.getRequestedFloors();
-        assertEquals(1, requested.size());
-        assertTrue(requested.contains(3));
-
-        // Adding same floor again should not duplicate
-        elevator.addFloorRequest(3);
-        assertEquals(1, requested.size());
-
-        // Adding another floor
-        elevator.addFloorRequest(5);
-        assertEquals(2, requested.size());
-        assertTrue(requested.contains(3));
-        assertTrue(requested.contains(5));
+        assertEquals(10, e.getFloorsInBuilding());
+        assertEquals(4, e.getCurrentFloor());
+        assertEquals(Direction.DOWN, e.getDirection());
+        assertEquals(List.of(2, 5), e.getRequestedFloors());
     }
 
+    // testing addFloorRequest
     @Test
-    void testMove() {
-        // Case 1: No requested floors → should stay IDLE
-        elevator.move();
-        assertEquals(Direction.IDLE, elevator.getDirection());
-        assertEquals(1, elevator.getCurrentFloor());
-
-        // Case 2: Move up
-        assertEquals(1, elevator.getCurrentFloor());
-        elevator.addFloorRequest(3); // first request
-        assertEquals(1, elevator.getRequestedFloors().size());
-        elevator.move(); // move from 1 → 2
-        assertEquals(2, elevator.getCurrentFloor());
-        assertEquals(Direction.UP, elevator.getDirection());
-
-        assertEquals(1, elevator.getRequestedFloors().size());
-        elevator.move(); // move from 2 → 3 (arrive, triggers dropOff)
-        elevator.dropOff(3);
-        assertEquals(3, elevator.getCurrentFloor());
-        assertEquals(0, elevator.getRequestedFloors().size());
-        assertEquals(Direction.IDLE, elevator.getDirection());
-
-        // Case 3: Move down
-        assertEquals(3, elevator.getCurrentFloor());
-        elevator.addFloorRequest(1); // request lower than current
-        assertEquals(1, elevator.getRequestedFloors().size());
-        elevator.move(); // move from 3 → 2
-        assertEquals(2, elevator.getCurrentFloor());
-        assertEquals(Direction.DOWN, elevator.getDirection());
-
-        elevator.move(); // move from 2 → 1 (arrive, triggers dropOff)
-        elevator.dropOff(1);
-        assertEquals(0, elevator.getRequestedFloors().size());
-        assertEquals(1, elevator.getCurrentFloor());
-        assertEquals(Direction.IDLE, elevator.getDirection());
-        assertTrue(elevator.getRequestedFloors().isEmpty());
-
-        // Case 4: Multiple requests out of order
-        assertEquals(1, elevator.getCurrentFloor());
-        elevator.addFloorRequest(5); // first request
-        elevator.addFloorRequest(2); // second request, out-of-order
-        elevator.move(); // move 1 → 2? No, moves toward first request (5) → 2 → 3
-        assertEquals(2, elevator.getCurrentFloor());
-        assertEquals(Direction.UP, elevator.getDirection());
-
-        elevator.move(); // 3
-        assertEquals(3, elevator.getCurrentFloor());
-        assertEquals(Direction.UP, elevator.getDirection());
-        elevator.move(); // 4
-        assertEquals(4, elevator.getCurrentFloor());
-        assertEquals(Direction.UP, elevator.getDirection());
-        elevator.move(); // 5 arrives, triggers dropOff
-        elevator.dropOff(5);
-        assertEquals(5, elevator.getCurrentFloor());
-        assertEquals(Direction.DOWN, elevator.getDirection()); // next request is 2
-        assertEquals(1, elevator.getRequestedFloors().size());
-        assertTrue(elevator.getRequestedFloors().contains(2));
-
-        // Continue toward next floor
-        elevator.move(); // 5 → 4
-        assertEquals(4, elevator.getCurrentFloor());
-        assertEquals(Direction.DOWN, elevator.getDirection());
-
-    }
-
-    @Test
-    void testDropOff() {
-        assertEquals(1, elevator.getCurrentFloor());
-
-        // Setup multiple requests
-        elevator.addFloorRequest(3);
-        elevator.addFloorRequest(5);
-
-        // Move to first requested floor
-        while (elevator.getCurrentFloor() != 3) {
-            elevator.move();
-        }
-
-        // Drop off at floor 3
-        assertEquals(3, elevator.getCurrentFloor());
-        elevator.dropOff(elevator.getCurrentFloor());
-        assertEquals(3, elevator.getCurrentFloor()); // should still be at floor 3
-        assertFalse(elevator.getRequestedFloors().contains(3)); // floor 3 removed
-        assertTrue(elevator.getRequestedFloors().contains(5)); // floor 5 still in requests
-
-        // Move to floor 5 and drop off
-        while (elevator.getCurrentFloor() != 5) {
-            elevator.move();
-        }
-
-        assertEquals(5, elevator.getCurrentFloor());
-        elevator.dropOff(elevator.getCurrentFloor());
-        assertEquals(5, elevator.getCurrentFloor());
-        assertTrue(elevator.getRequestedFloors().isEmpty()); // all requests done
-    }
-
-    @Test
-    void testGetNextRequestedFloor() {
-        assertEquals(1, elevator.getCurrentFloor());
+    void testAddFloorRequestSortedWithoutDuplicates() {
         elevator.addFloorRequest(4);
-        elevator.addFloorRequest(2);
-
-        // Next requested floor should always return the first in the list
-
-        elevator.getNextRequestedFloor();
-        assertEquals(4, elevator.getNextRequestedFloor());
+        elevator.addFloorRequest(2); // should sort to [2,4]
+        elevator.addFloorRequest(4); // no duplicates
+        List<Integer> requestList = elevator.getRequestedFloors();
+        assertEquals(2, requestList.size());
+        assertEquals(List.of(2, 4), requestList);
     }
 
     @Test
-    void testGetCurrentFloor() {
-        assertEquals(1, elevator.getCurrentFloor()); // initially floor 1
-
-        // Move elevator up
-        elevator.addFloorRequest(3);
+    void testAddFloorRequestWhileAlreadyDownTriggersDescendingSort() {
+        // start: go up to 4
+        elevator.addFloorRequest(4);
         elevator.move();
-        assertEquals(2, elevator.getCurrentFloor());
         elevator.move();
-        assertEquals(3, elevator.getCurrentFloor());
-    }
-
-    @Test
-    void testGetRequestedFloors() {
-        elevator.addFloorRequest(2);
-        elevator.addFloorRequest(5);
-
-        List<Integer> requests = elevator.getRequestedFloors();
-        assertEquals(2, requests.size());
-        assertTrue(requests.contains(2));
-        assertTrue(requests.contains(5));
-
-        elevator.dropOff(2);
-        assertFalse(requests.contains(2));
-        elevator.dropOff(5);
-        assertFalse(requests.contains(5));
-
-    }
-
-    @Test
-    void testGetDirection() {
-        assertEquals(Direction.IDLE, elevator.getDirection()); // initially idle
-
-        elevator.addFloorRequest(3);
         elevator.move();
-        assertEquals(Direction.UP, elevator.getDirection());
+        elevator.move(); // now at 4 and IDLE
 
-        // After reaching the floor and dropping off, should go back to IDLE
-        while (!elevator.getRequestedFloors().isEmpty()) {
-            elevator.move();
-        }
-        assertEquals(Direction.IDLE, elevator.getDirection());
-    }
+        // now request a LOWER floor
+        elevator.addFloorRequest(2); // still IDLE, so asc sorting is used but list = [2]
+        elevator.move(); // 4 -> 3, now direction becomes DOWN
 
-    @Test
-    void testGetFloorsInBuilding() {
-        assertEquals(5, elevator.getFloorsInBuilding()); // building of 5 floors
-        assertEquals(6, new Elevator(6).getFloorsInBuilding());
+        // NOW elevator is DOWN — THIS IS THE KEY
+        elevator.addFloorRequest(1); // goes into the DOWN branch
+
+        // assert descending order
+        assertEquals(List.of(2, 1), elevator.getRequestedFloors());
     }
 
     @Test
@@ -223,4 +88,171 @@ class TestElevator {
         elevator.addFloorRequest(1); // Already on floor 1
         assertTrue(elevator.getRequestedFloors().isEmpty());
     }
+
+    // testing move
+    @Test
+    void testMoveUpWithSortedRequests() {
+        // Add floors out of order – should sort to [2, 4]
+        elevator.addFloorRequest(4);
+        elevator.addFloorRequest(2);
+
+        // Move 1: 1 -> 2 (no dropOff yet)
+        elevator.move();
+        assertEquals(2, elevator.getCurrentFloor());
+        assertEquals(Direction.UP, elevator.getDirection());
+        assertTrue(elevator.getRequestedFloors().contains(2)); // still there
+
+        // Move 2: at 2 -> dropOff(2) (current stays 2)
+        elevator.move();
+        assertEquals(2, elevator.getCurrentFloor());
+        assertEquals(List.of(4), elevator.getRequestedFloors());
+
+        // Move 3: 2 -> 3
+        elevator.move();
+        assertEquals(3, elevator.getCurrentFloor());
+        assertEquals(Direction.UP, elevator.getDirection());
+
+        // Move 4: 3 -> 4
+        elevator.move();
+        assertEquals(4, elevator.getCurrentFloor());
+
+        // Move 5: at 4 -> dropOff(4) (current stays 4), now idle
+        elevator.move();
+        assertTrue(elevator.getRequestedFloors().isEmpty());
+        assertEquals(Direction.IDLE, elevator.getDirection());
+    }
+
+    @Test
+    void testMoveDownAfterGoingUp() {
+        elevator.addFloorRequest(4);
+        elevator.addFloorRequest(2);
+        // Move to top 4 first
+        while (!elevator.getRequestedFloors().isEmpty()) {
+            elevator.move();
+        }
+        // Now request down floor
+        elevator.addFloorRequest(1);
+        assertEquals(Direction.IDLE, elevator.getDirection()); // ready to go DOWN
+
+        elevator.move();
+        assertEquals(3, elevator.getCurrentFloor());
+        assertEquals(Direction.DOWN, elevator.getDirection());
+    }
+
+    @Test
+    void testMoveSetsIdleWhenNoRequests() {
+        assertTrue(elevator.getRequestedFloors().isEmpty());
+        elevator.move(); // nothing to do
+        assertEquals(Direction.IDLE, elevator.getDirection());
+        assertEquals(1, elevator.getCurrentFloor()); // stays put
+    }
+
+    @Test
+    void testMoveSetsDirectionDownWhenAboveNext() {
+        // Get to floor 3 and clear requests
+        elevator.addFloorRequest(3);
+        while (!elevator.getRequestedFloors().isEmpty()) {
+            elevator.move();
+        }
+        assertEquals(3, elevator.getCurrentFloor());
+        assertEquals(Direction.IDLE, elevator.getDirection());
+
+        // Now request a lower floor so next < current
+        elevator.addFloorRequest(1);
+        elevator.move(); // 3 -> 2, should set DOWN
+        assertEquals(2, elevator.getCurrentFloor());
+        assertEquals(Direction.DOWN, elevator.getDirection());
+    }
+
+    // testing dropOff
+    @Test
+    void testDropOffRemovesCompletedFloors() {
+        elevator.addFloorRequest(3);
+        elevator.addFloorRequest(5);
+
+        // Move to 3 (1 -> 2 -> 3)
+        elevator.move(); // 1 -> 2
+        elevator.move(); // 2 -> 3
+        assertTrue(elevator.getRequestedFloors().contains(3)); // not dropped yet
+
+        // Drop off at 3 (stay on 3)
+        elevator.move();
+        assertFalse(elevator.getRequestedFloors().contains(3)); // now dropped
+
+        // Move to 5 (3 -> 4 -> 5)
+        elevator.move();
+        elevator.move();
+        assertTrue(elevator.getRequestedFloors().contains(5)); // still there
+
+        // Drop off at 5
+        elevator.move();
+        assertTrue(elevator.getRequestedFloors().isEmpty());
+        assertEquals(Direction.IDLE, elevator.getDirection());
+    }
+
+    @Test
+    void testDropOffSetsDirectionUpWhenNextRequestIsHigher() {
+        // Requests sorted ascending: [2, 5]
+        elevator.addFloorRequest(2);
+        elevator.addFloorRequest(5);
+
+        // Move to 2
+        elevator.move(); // 1 -> 2
+        elevator.move(); // dropOff(2)
+
+        // Next floor is 5 > 2 so direction should become UP
+        assertEquals(Direction.UP, elevator.getDirection());
+        assertEquals(List.of(5), elevator.getRequestedFloors());
+    }
+
+    @Test
+    void testDropOffDirectCallSetsDirectionDown() {
+        // Setup elevator already moving UP with multiple requests
+        elevator.addFloorRequest(2);
+        elevator.addFloorRequest(4); // sorted -> [2, 4]
+
+        // Move to 2 and drop it off
+        elevator.move(); // 1 -> 2
+        elevator.move(); // dropOff(2), now [4]
+
+        // Now direction = UP. Add lower request so dropOff hits DOWN branch.
+        elevator.addFloorRequest(1); // list -> [1,4] but direction still UP
+        elevator.dropOff(4); // manually drop off at 4
+
+        // MUST SET direction DOWN because next request (1) is lower
+        assertEquals(Direction.DOWN, elevator.getDirection());
+    }
+
+    // testing getters and setters
+
+    @Test
+    void testGetNextRequestedFloorReturnsSortedFirst() {
+        elevator.addFloorRequest(4);
+        elevator.addFloorRequest(2); // now sorted to [2,4]
+        assertEquals(2, elevator.getNextRequestedFloor());
+    }
+
+    @Test
+    void testGetCurrentFloorChangesWithMovement() {
+        elevator.addFloorRequest(3);
+        elevator.move();
+        assertEquals(2, elevator.getCurrentFloor());
+    }
+
+    @Test
+    void testGetDirectionUpdatesCorrectly() {
+        elevator.addFloorRequest(3);
+        elevator.move();
+        assertEquals(Direction.UP, elevator.getDirection());
+        while (!elevator.getRequestedFloors().isEmpty()) {
+            elevator.move();
+        }
+        assertEquals(Direction.IDLE, elevator.getDirection());
+    }
+
+    @Test
+    void testGetFloorsInBuilding() {
+        assertEquals(5, elevator.getFloorsInBuilding());
+    }
+
 }
