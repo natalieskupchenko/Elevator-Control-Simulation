@@ -56,6 +56,12 @@ Here is an example saved file:
 The user can later choose Load to restore this exact state.
 The Elevator class implements a toJson() method so its state can be written to JSON. The JsonWriter class writes the elevator data to a file. The JsonReader class loads the elevator from JSON.
 
+### Phase 3
+
+#### Optional User Stories for Phase 3
+
+1. As a user, after running the program, I want the first menu I see to have options to either load a previous elevator or create a new elevator.
+2. As a user, I want the elevator to sort the requested floors depending on the current direction of the elevator. If there are floors pressed in two opposite directions, then the elevator should go to the first floor pressed, and then continue going to the next floors. 
 
 #### Acknowledgements
 This project references and adapts parts of the JsonSerializationDemo from CPSC 210 for JSON persistence (JsonReader, JsonWriter, and Writable patterns).
