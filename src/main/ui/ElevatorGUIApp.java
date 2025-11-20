@@ -4,6 +4,7 @@ import java.awt.CardLayout;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class ElevatorGUIApp extends JFrame {
@@ -16,6 +17,12 @@ public class ElevatorGUIApp extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+
+        CardLayout cardLayout = new CardLayout();
+        JPanel mainContainer = new JPanel(cardLayout);
+        IntroPanel intro = new IntroPanel();
+        mainContainer.add(intro, "INTRO");
+        add(mainContainer);
     }
 
     public static void main(String [] args) {
