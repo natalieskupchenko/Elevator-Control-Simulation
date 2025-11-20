@@ -26,7 +26,7 @@ public class ElevatorPanel extends JPanel {
 
         // floor buttons
         JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new GridLayout(numFloors, 5, 5, 5));
+        buttonsPanel.setLayout(new GridLayout(numFloors/4, numFloors/4, 5, 5));
         for (int i = 1; i <= numFloors; i++) {
             int floorNumber = i;
             JButton floorButton = new JButton("" + floorNumber);

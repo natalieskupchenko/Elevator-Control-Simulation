@@ -27,7 +27,6 @@ public class EnterFloorsPanel extends JPanel {
                 int numFloors = Integer.parseInt(numFloorsField.getText());
                 System.out.println(numFloors + " floors entered"); 
                 app.showElevatorPanel(numFloors);
-                app.showElevatorPanel(numFloors);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Please enter a valid integer.");
             }
