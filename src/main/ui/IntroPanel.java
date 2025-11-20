@@ -10,8 +10,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class IntroPanel extends JPanel {
+    private ElevatorGUIApp app;
 
-    public IntroPanel() {
+    public IntroPanel(ElevatorGUIApp app) {
+        this.app = app;
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 
@@ -30,6 +33,9 @@ public class IntroPanel extends JPanel {
         add(newButton);
 
         loadButton.addActionListener(e -> System.out.println("Load Elevator clicked"));
-        newButton.addActionListener(e -> System.out.println("Create New Elevator clicked"));
+        newButton.addActionListener(e -> {
+            System.out.println("Create New Elevator clicked");
+            app.showEnterFloorsPanel();
+        });
     }
 }
