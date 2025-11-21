@@ -9,16 +9,23 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import model.ExcludeFromJacocoGeneratedReport;
+
+// Displays the initial welcome screen that lets the user load a saved elevator or create a new one.
+@ExcludeFromJacocoGeneratedReport
 public class IntroPanel extends JPanel {
-    private ElevatorGUIApp app;
 
-    public IntroPanel(ElevatorGUIApp app) {
-        this.app = app;
-
+    // REQUIRES: app != null
+    // MODIFIES: this
+    // EFFECTS: constructs the intro screen asking the user to load a previous
+    // elevator or create a new one; sets layout, creates buttons, and
+    // installs listeners that call app.loadElevatorFromFile() or
+    // app.showEnterFloorsPanel() when clicked
+    public IntroPanel(ElevatorGuiApp app) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 
-        JLabel welcomeLabel = new JLabel("Welcome! Would you like to load  previous elevator or create a new one?");
+        JLabel welcomeLabel = new JLabel("Welcome! Would you like to load a previous elevator or create a new one?");
         welcomeLabel.setAlignmentX(CENTER_ALIGNMENT);
         add(welcomeLabel);
         add(Box.createRigidArea(new Dimension(0, 20)));
@@ -32,7 +39,7 @@ public class IntroPanel extends JPanel {
         add(Box.createRigidArea(new Dimension(0, 10)));
         add(newButton);
 
-        loadButton.addActionListener(e -> System.out.println("Load Elevator clicked"));
+        loadButton.addActionListener(e -> app.loadElevatorFromFile());
         newButton.addActionListener(e -> {
             System.out.println("Create New Elevator clicked");
             app.showEnterFloorsPanel();
