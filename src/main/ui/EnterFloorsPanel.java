@@ -18,7 +18,7 @@ public class EnterFloorsPanel extends JPanel {
     // EFFECTS: initializes panel UI components; sets layout, padding, and
     // installs action listener that validates user input and directs
     // app to show elevator panel if input is valid
-    public EnterFloorsPanel(ElevatorGuiApp app) {
+    public EnterFloorsPanel(ElevatorAppGui app) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 

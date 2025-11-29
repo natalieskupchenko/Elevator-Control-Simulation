@@ -139,6 +139,7 @@ class TestElevator {
         assertEquals(Direction.DOWN, elevator.getDirection());
     }
 
+   
     @Test
     void testMoveSetsIdleWhenNoRequests() {
         assertTrue(elevator.getRequestedFloors().isEmpty());

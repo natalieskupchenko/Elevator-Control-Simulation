@@ -3,6 +3,8 @@ package ui;
 import javax.swing.*;
 
 import model.Elevator;
+import model.Event;
+import model.EventLog;
 import model.ExcludeFromJacocoGeneratedReport;
 import persistence.JsonReader;
 import persistence.JsonWriter;
@@ -95,7 +97,18 @@ public class ElevatorPanel extends JPanel {
         loadButton.addActionListener(e -> loadElevator());
 
         JButton exitButton = new JButton("Exit");
+
+        
+
         exitButton.addActionListener(e -> System.exit(0));
+        // When clicked, print event log and exit
+        exitButton.addActionListener(e -> {
+            System.out.println("Printing Event Log:");
+            for (Event event : EventLog.getInstance()) {
+                System.out.println(event);
+            }
+            System.exit(0);
+        });
 
         controlPanel.add(goButton);
         controlPanel.add(addSaveButton());

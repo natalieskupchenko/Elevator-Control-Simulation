@@ -9,13 +9,14 @@ import org.json.JSONObject;
 
 import persistence.Writable;
 
-// Represents an elevator 
+// Represents an elevator
+
 public class Elevator implements Writable {
     private int currentFloor; // The floor that the elevator is currently on.
     private int nextFloor; // The next floor that the elevator is going to.
-    private int floorsInBuilding; // Total floors in building, where 1 is the ground floor (floorsInBuiding >= 1).
+    private int floorsInBuilding; // Total floors in building (>= 1).
     private List<Integer> requestedFloors; // The list of requested floors.
-    private Direction direction; // The direction the elevator is travelling: "UP", "DOWN", "IDLE"
+    private Direction direction; // The direction the elevator is travelling.
 
     // REQUIRES: floorsInBuilding >= 1
     // EFFECTS: creates an Elevator starting at floor 1 with IDLE direction
@@ -24,6 +25,9 @@ public class Elevator implements Writable {
         this.floorsInBuilding = floorsInBuilding;
         this.requestedFloors = new ArrayList<>();
         this.direction = Direction.IDLE;
+
+        EventLog.getInstance().logEvent(
+                new Event("Created new elevator with " + floorsInBuilding + " floors."));
     }
 
     // REQUIRES: 1 <= currentFloor <= floorsInBuilding
@@ -33,6 +37,10 @@ public class Elevator implements Writable {
         this.currentFloor = currentFloor;
         this.direction = direction;
         this.requestedFloors = new ArrayList<>(requestedFloors);
+
+        EventLog.getInstance().logEvent(
+                new Event("Loaded elevator from file: current floor "
+                        + currentFloor + ", direction " + direction + ", requested floors " + requestedFloors + "."));
     }
 
     // EFFECTS: returns this elevator as a JSON object
@@ -56,59 +64,71 @@ public class Elevator implements Writable {
     }
 
     // MODIFIES: this
-    // EFFECTS: if 1 <= floor <= floorsInBuilding and floor is not the current floor
-    // and not already in requestedFloors, adds it to requestedFloors;
-    // otherwise, does nothing
+    // EFFECTS: if valid floor and not duplicate/current, adds it to requestedFloors
     public void addFloorRequest(int floor) {
         if (floor < 1 || floor > floorsInBuilding) {
-            return; // ignore invalid floor
+            return;
         }
         if (floor == currentFloor || requestedFloors.contains(floor)) {
-            return; // ignore duplicates or current floor
+            return;
         }
 
         requestedFloors.add(floor);
+        EventLog.getInstance().logEvent(new Event("Floor " + floor + " requested."));
 
-        // Sorting based on direction
+
         if (direction == Direction.UP || direction == Direction.IDLE) {
-            requestedFloors.sort(Integer::compareTo); // ascending order
+            requestedFloors.sort(Integer::compareTo);
         } else {
-            requestedFloors.sort(Collections.reverseOrder()); // descending order
+            requestedFloors.sort(Collections.reverseOrder());
         }
+
+        
     }
 
-    // MODIFIES: currentFloor, direction, requestedFloors
-    // EFFECTS: moves the elevator one floor towards next requested floor,
-    // updates direction accordingly. If there are no next requested floors,
-    // direction is changed to IDLE.
     public void move() {
         if (requestedFloors.isEmpty()) {
             direction = Direction.IDLE;
+            EventLog.getInstance().logEvent(new Event("Elevator is now idle."));
         } else if (currentFloor < getNextRequestedFloor()) {
+            int old = currentFloor;
             currentFloor++;
             direction = Direction.UP;
+            EventLog.getInstance().logEvent(
+                    new Event("Elevator moved from floor "
+                            + old + " to floor " + currentFloor + "."));
         } else if (currentFloor > getNextRequestedFloor()) {
+            int old = currentFloor;
             currentFloor--;
             direction = Direction.DOWN;
-        } else { // Arrived at requested floor
-            dropOff(currentFloor); // remove current floor from requested
-
+            EventLog.getInstance().logEvent(
+                    new Event("Elevator moved from floor " 
+                    + old + " to floor " + currentFloor + "."));
+        } else {
+            // Arrived at requested floor
+            dropOff(currentFloor);
+            // remove current floor from requested } }
         }
     }
 
     // REQUIRES: requestedFloors contains currentFloor
     // MODIFIES: requestedFloors
-    // EFFECTS: drops off passengers at current floor and removes current floor,
-    // removes current floor from requestedFloors
+    // EFFECTS: removes current floor from requested floors
     public void dropOff(int floor) {
-        // Remove the current floor from the requested floors
         requestedFloors.remove(Integer.valueOf(floor));
+
+        EventLog.getInstance().logEvent(
+                new Event("Elevator arrived at floor " + floor + " and dropped off passengers."));
+
         if (requestedFloors.isEmpty()) {
             direction = Direction.IDLE;
+            EventLog.getInstance().logEvent(new Event("Elevator is now idle."));
         } else if (floor > getNextRequestedFloor()) {
             direction = Direction.DOWN;
+            EventLog.getInstance().logEvent(new Event("Elevator is moving down."));
         } else {
             direction = Direction.UP;
+            EventLog.getInstance().logEvent(new Event("Elevator is moving up."));
         }
     }
 
@@ -119,24 +139,19 @@ public class Elevator implements Writable {
         return nextFloor;
     }
 
-    // EFFECTS: returns current floor of the elevator
     public int getCurrentFloor() {
         return currentFloor;
     }
 
-    // EFFECTS: returns list of requested floors
     public List<Integer> getRequestedFloors() {
         return requestedFloors;
     }
 
-    // EFFECTS: returns current direction of elevator
     public Direction getDirection() {
         return direction;
     }
 
-    // EFFECTS: returns floors in building
     public int getFloorsInBuilding() {
         return floorsInBuilding;
     }
-
 }

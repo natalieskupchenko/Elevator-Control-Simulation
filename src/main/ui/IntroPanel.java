@@ -21,7 +21,7 @@ public class IntroPanel extends JPanel {
     // elevator or create a new one; sets layout, creates buttons, and
     // installs listeners that call app.loadElevatorFromFile() or
     // app.showEnterFloorsPanel() when clicked
-    public IntroPanel(ElevatorGuiApp app) {
+    public IntroPanel(ElevatorAppGui app) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 

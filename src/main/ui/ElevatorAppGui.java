@@ -10,13 +10,14 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import model.Elevator;
+
 import model.ExcludeFromJacocoGeneratedReport;
 import persistence.JsonReader;
 
-@ExcludeFromJacocoGeneratedReport
 // Represents the main GUI application window that manages switching between UI
 // panels.
-public class ElevatorGuiApp extends JFrame {
+@ExcludeFromJacocoGeneratedReport
+public class ElevatorAppGui extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel mainContainer;
@@ -24,7 +25,7 @@ public class ElevatorGuiApp extends JFrame {
     // MODIFIES: this
     // EFFECTS: constructs the main GUI window, initializes layout and intro panel,
     // makes window visible
-    public ElevatorGuiApp() {
+    public ElevatorAppGui() {
         setTitle("Elevator Control Simulation");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(1000, 800));
@@ -42,6 +43,7 @@ public class ElevatorGuiApp extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+
 
     // REQUIRES: numFloors > 0
     // MODIFIES: this.mainContainer
@@ -88,6 +90,6 @@ public class ElevatorGuiApp extends JFrame {
 
     // EFFECTS: launches the ElevatorGuiApp on the Swing event dispatch thread
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new ElevatorGuiApp());
+        SwingUtilities.invokeLater(() -> new ElevatorAppGui());
     }
 }
