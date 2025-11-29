@@ -65,5 +65,93 @@ As a user, after running the program, I want the first menu I see to have option
 2. **Sorting floors based on direction** </li>
 As a user, I want the elevator to sort the requested floors depending on the current direction of the elevator. If there are floors pressed in two opposite directions, then the elevator should go to the first floor pressed, and then continue going to the next floors. 
 
+### Phase 4
+
+#### Phase 4: Task 2
+Printing Event Log:
+
+Fri Nov 28 16:49:51 PST 2025
+
+Created new elevator with 10 floors.
+
+Fri Nov 28 16:49:52 PST 2025
+
+Floor 2 requested.
+
+Fri Nov 28 16:49:53 PST 2025
+
+Floor 3 requested.
+
+Fri Nov 28 16:49:54 PST 2025
+
+Floor 5 requested.
+
+Fri Nov 28 16:49:56 PST 2025
+
+Elevator moved from floor 1 to floor 2.
+
+Fri Nov 28 16:49:57 PST 2025
+
+Elevator arrived at floor 2 and dropped off passengers.
+
+Fri Nov 28 16:49:57 PST 2025
+
+Elevator is moving up.
+
+Fri Nov 28 16:49:58 PST 2025
+
+Elevator moved from floor 2 to floor 3.
+
+Fri Nov 28 16:49:59 PST 2025
+
+Elevator arrived at floor 3 and dropped off passengers.
+
+Fri Nov 28 16:49:59 PST 2025
+
+Elevator is moving up.
+
+Fri Nov 28 16:50:00 PST 2025
+
+Elevator moved from floor 3 to floor 4.
+
+Fri Nov 28 16:50:01 PST 2025
+
+Elevator moved from floor 4 to floor 5.
+
+Fri Nov 28 16:50:02 PST 2025
+
+Elevator arrived at floor 5 and dropped off passengers.
+
+Fri Nov 28 16:50:02 PST 2025
+
+Elevator is now idle.
+
+Fri Nov 28 16:50:04 PST 2025
+
+Floor 8 requested.
+
+Fri Nov 28 16:50:06 PST 2025
+
+Elevator moved from floor 5 to floor 6.
+
+Fri Nov 28 16:50:08 PST 2025
+
+Elevator moved from floor 6 to floor 7.
+
+Fri Nov 28 16:50:09 PST 2025
+
+Elevator moved from floor 7 to floor 8.
+
+Fri Nov 28 16:50:10 PST 2025
+
+Elevator arrived at floor 8 and dropped off passengers.
+
+Fri Nov 28 16:50:10 PST 2025
+
+Elevator is now idle.
+
+#### Phase 4: Task 3
+The UML diagram shows how the classes in the project are organized and how they relate to each other. The model classes handle the elevator logic, the persistence classes handle saving and loading, and the UI classes handle what the user sees and interacts with. Right now, the UI directly communicates with the model, which works but mixes the display with the logic. If I had more time, I would add a controller class to separate the UI from the model. The controller would receive input from the UI, tell the elevator what to do, and update the UI based on the elevator’s state. This would make the program easier to maintain, test, and expand in the future.
+
 #### Acknowledgements
 This project references and adapts parts of the JsonSerializationDemo from CPSC 210 for JSON persistence (JsonReader, JsonWriter, and Writable patterns).
