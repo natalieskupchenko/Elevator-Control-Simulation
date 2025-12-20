@@ -6,24 +6,30 @@ You might be wondering what my motivation is for creating an elevator simulation
 
 And even for something trivial like an elevator system, I found myself wondering about the criteria for how an elevator is assigned to a specific floor call. The more I followed this train of thought, I started wondering what would happen as both the number of floors and the number of elevators increased. If set a number of floors, an arbitrary amount of floor calls, and we kept adding elevators to the building, at what point would adding elevators become irrelevant? At some point, there will be enough active elevators in the system that it would be quicker for an active elevator to answer a floor than an inactive elevator. So what are the conditions in the system to have a set of permanently inactive elevators? What is the maximum number of elevators that can be active at once for a given number of floors and floor calls? Does it matter where in the building the elevators start (all at the ground floor or distributed throughout the building?).
 
-And so, my elevator control simulation was born to explore these questions more!
+And so, my elevator control simulation was born to further explore these questions.
 
 ### Program Functionality (to do for me)
-1. Fix floor requests so that before move() is called, floor requests are prioritized like this:
+1. Fix floor requests so that before move() is called, floor requests are prioritized like this. It might be smart to separate this into HashMap or separate lists or something. 
 
 IDLE. We are at floor 5. 12 total floors.
-Floor req = 9
-Floor req = 6
-Floor req = 2
-Floor req = 4
-Floor req = 11
+Floor req = 9.
+Floor req = 6.
+Floor req = 2.
+Floor req = 4.
+Floor req = 11.
 UP. We go to floor 6. Drop off. 
 UP. We go to floor 9. Drop off. 
 DOWN. We go to floor 4. Drop off. 
 DOWN. We go to floor 2. Drop off.
-UP. We go to floor 11. Drop off
+UP. We go to floor 11. Drop off.
 IDLE.
 
+2. Add floor call functionality so that you can press "up" or "down" from floors
+
+3. Make GUI nicer - fix buttons and fix the way the elevator looks on each floor
+
+4. Add multiple elevators. Same floor request functionality inside each of them. Difference is floor calls: if you get an call to go up from a certain floor, the elevator assigned is the one that is closest and travelling in the same direction. 
+Think about if you have something like the example above and you get a down request at 3. Would this elevator evaluate it or would another one? We'd need to do some kind of search for this. Because then it would go 6-9-4-3(pickup)-2-11. NO - because we already promised 11, so down 3 would only come AFTER 11?  Floors evaluated in terms of most recently pressed but sorted by direction.
 
 
 
