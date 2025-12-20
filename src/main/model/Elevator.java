@@ -82,7 +82,6 @@ public class Elevator implements Writable {
         } else {
             requestedFloors.sort(Collections.reverseOrder());
         }
-
         
     }
 

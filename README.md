@@ -1,48 +1,37 @@
-# Elevator Simulator: CPSC 210 Term Project
+# Elevator Control Simulation 
+### By: Natalie Skupchenko
 
-## By: Natalie Skupchenko
+### Introduction
+You might be wondering what my motivation is for creating an elevator simulation as a project in Java, and it is a valid question. As a math student, my mind naturally wanders to asking questions in my everyday life like: *"why does this work the way it does?"* or *"how can this be optimized in a creative way to find the most efficient solution?"* 
 
-### Phase 0 
-#### Description of Project for Phase 0
-**What will the application do?**</li>
-This application will allow the user to simulate the operation of elevators in a building. The user will be able to call an elevator from a floor, select a floor from inside the elevator, hold the door open, close the door, and press a button to call for 911. The user will be able to create a building and specify the number of elevators and floors. The user will also be able to temporarily close an elevator for maintenance, remove an elevator completely, add a new elevator or add a new floor. The user will be able to access the list of calls to the elevator from various floors and will be able to access the list of floors pressed from inside the elevator. The user will also be able to access the current weight inside the elevator and the maximum capacity (in kg).
+And even for something trivial like an elevator system, I found myself wondering about the criteria for how an elevator is assigned to a specific floor call. The more I followed this train of thought, I started wondering what would happen as both the number of floors and the number of elevators increased. If set a number of floors, an arbitrary amount of floor calls, and we kept adding elevators to the building, at what point would adding elevators become irrelevant? At some point, there will be enough active elevators in the system that it would be quicker for an active elevator to answer a floor than an inactive elevator. So what are the conditions in the system to have a set of permanently inactive elevators? What is the maximum number of elevators that can be active at once for a given number of floors and floor calls? Does it matter where in the building the elevators start (all at the ground floor or distributed throughout the building?).
 
-**Who will use it?**</li>
-This application is intended for anyone who wants to explore and understand how elevators operate in a building. It could be used by students learning about simulation, programming, or building systems, as well as by anyone interested in experimenting with elevator scheduling and management in a controlled, simulated environment.
+And so, my elevator control simulation was born to explore these questions more!
 
-**Why is this project of interest to you?**</li>
-I am a mathematics student and I am very interested in optimization/logistics, as well as computer science. I have always been curious about the logic behind how elevators are called and this project allows me to explore this. This project will also be applicable to potential future jobs because it will improve my skills in object oriented programming as well as optimization for logistics and scheduling. 
+### Program Functionality (to do for me)
+1. Fix floor requests so that before move() is called, floor requests are prioritized like this:
 
-**Non-Trivial Classes**
-1. **Elevator** represents a single elevator. 
-1. **ElevatorSystem** represents a collection of elevators in the building.
+IDLE. We are at floor 5. 12 total floors.
+Floor req = 9
+Floor req = 6
+Floor req = 2
+Floor req = 4
+Floor req = 11
+UP. We go to floor 6. Drop off. 
+UP. We go to floor 9. Drop off. 
+DOWN. We go to floor 4. Drop off. 
+DOWN. We go to floor 2. Drop off.
+UP. We go to floor 11. Drop off
+IDLE.
 
-### Phase 1
 
-#### User Stories for Phase 1 (made in Phase 0)
-1. **Add a floor request** </li>
-As a user, I want to press a button for a specific floor so that the elevator will go there. (User story: add multiple Xs to my Y)
-2. **Move elevator one floor at a time**</li>
-As a user, I want the elevator to move one floor at a time toward the requested floor, updating its direction so I know if it’s going up or down.
-3. **Arrive at requested floor and drop off**</li>
-As a user, I want the elevator to stop at my requested floor and remove that floor from the list of requested floors.
-4. **Track elevator direction, current floor and requested floors**</li>
-As a user, I want to see what floor the elevator is on, what floors are requested for the elevator to go to, and whether the elevator is going up, down, or idle. (User story: list all Xs in Y)
 
-### Phase 2
 
-#### User Stories for Phase 2
+### JSON Persistence for Saving and Loading Elevator State 
 
-1. **Option to save entire state of application to file** </li>
-As a user, I want the option to be able to save the current state of the elevator to file (current floor, requested floors, direction).
-2. **Option to reload state from file and resume exactly where they left off in earlier file** </li>
-As a user, I want the option to reload a previously saved elevator from file and resume the elevator simulation of the selected instance at that exact state.
+This program uses JSON persistence to store the elevator state. When the user chooses the "Save" option, the current state of the elevator (current floor, requested floors, direction) is saved to: ./data/elevator.json
 
-This program uses JSON persistence to store the elevator state. When the user chooses the Save option, the elevator is saved to: ./data/elevator.json
-Here is an example saved file: 
-
-{
-
+#### Example of Saved Elevator State:
     "currentFloor": 3, 
 
     "floorsInBuilding": 10,
@@ -51,24 +40,15 @@ Here is an example saved file:
 
     "requestedFloors": [5, 8]
   
-}
 
-The user can later choose Load to restore this exact state.
-The Elevator class implements a toJson() method so its state can be written to JSON. The JsonWriter class writes the elevator data to a file. The JsonReader class loads the elevator from JSON.
+The user can later choose "Load" to restore a previously saved elevator from file and resume the elevator simulation of the selected instance at that exact state. The Elevator class implements a toJson() method so its state can be written to JSON. The JsonWriter class writes the elevator data to a file. The JsonReader class loads the elevator from JSON.
 
-### Phase 3
 
-#### Optional User Stories for Phase 3
+### Event Logging
 
-1. **Add an opening menu with option to load previous elevator** </li>
-As a user, after running the program, I want the first menu I see to have options to either load a previous elevator or create a new elevator.
-2. **Sorting floors based on direction** </li>
-As a user, I want the elevator to sort the requested floors depending on the current direction of the elevator. If there are floors pressed in two opposite directions, then the elevator should go to the first floor pressed, and then continue going to the next floors. 
+This program uses event logging to record all events during program execution and prints out the event log in the terminal after the program finishes running. 
 
-### Phase 4
-
-#### Phase 4: Task 2
-Printing Event Log:
+#### Example of Printed Event Log
 
 Fri Nov 28 16:49:51 PST 2025
 
@@ -150,8 +130,7 @@ Fri Nov 28 16:50:10 PST 2025
 
 Elevator is now idle.
 
-#### Phase 4: Task 3
-The UML diagram shows how the classes in the project are organized and how they relate to each other. The model classes handle the elevator logic, the persistence classes handle saving and loading, and the UI classes handle what the user sees and interacts with. Right now, the UI directly communicates with the model, which works but mixes the display with the logic. If I had more time, I would add a controller class to separate the UI from the model. The controller would receive input from the UI, tell the elevator what to do, and update the UI based on the elevator’s state. This would make the program easier to maintain, test, and expand in the future.
 
-#### Acknowledgements
+### Acknowledgements
 This project references and adapts parts of the JsonSerializationDemo from CPSC 210 for JSON persistence (JsonReader, JsonWriter, and Writable patterns).
+This project also references and adapts code from CPSC 210 AlarmSystem. URL: https://github.students.cs.ubc.ca/CPSC210/AlarmSystem
