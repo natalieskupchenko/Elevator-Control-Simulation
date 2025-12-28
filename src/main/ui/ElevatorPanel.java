@@ -13,8 +13,6 @@ import java.awt.*;
 import java.io.IOException;
 
 @ExcludeFromJacocoGeneratedReport
-// Shows the main elevator simulation view, including controls, status displays,
-// and interactive floor request buttons.
 public class ElevatorPanel extends JPanel {
     private Elevator elevator;
     private JLabel currentFloorLabel;
@@ -22,125 +20,191 @@ public class ElevatorPanel extends JPanel {
     private JLabel requestedFloorsLabel;
     private JPanel elevatorShaft;
 
-    // REQUIRES: elevator != null, numFloors > 0
-    // MODIFIES: this
-    // EFFECTS: initializes GUI components for the elevator panel,
-    // including shaft, floor buttons, top display, and control buttons
     public ElevatorPanel(Elevator elevator, int numFloors) {
         this.elevator = elevator;
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         elevatorShaft = new ElevatorShaftPanel(elevator, numFloors);
         add(elevatorShaft, BorderLayout.CENTER);
 
-        add(createFloorButtonsPanel(numFloors), BorderLayout.EAST);
+        add(createFloorCallPanel(numFloors), BorderLayout.WEST);
+        add(createCabinRequestPanel(numFloors), BorderLayout.EAST);
         add(createTopPanel(), BorderLayout.NORTH);
         add(createControlPanel(), BorderLayout.SOUTH);
     }
 
-    // REQUIRES: numFloors > 0
-    // MODIFIES: this
-    // EFFECTS: creates and returns a panel containing buttons for each floor;
-    // pressing a button adds a floor request to the elevator
-    private JPanel createFloorButtonsPanel(int numFloors) {
-        JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new GridLayout(numFloors / 4, numFloors / 4, 5, 5));
+    private JScrollPane createFloorCallPanel(int numFloors) {
+        JPanel callPanel = new JPanel();
+        callPanel.setLayout(new BoxLayout(callPanel, BoxLayout.Y_AXIS));
+        callPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        for (int i = 1; i <= numFloors; i++) {
-            int floorNumber = i;
-            JButton floorButton = new JButton("" + floorNumber);
-
-            floorButton.addActionListener(e -> {
-                elevator.addFloorRequest(floorNumber);
-                requestedFloorsLabel.setText("Requested Floors: " + elevator.getRequestedFloors());
-            });
-
-            buttonsPanel.add(floorButton);
+        for (int i = numFloors; i >= 1; i--) {
+            callPanel.add(createFloorCallRow(i, numFloors));
         }
 
-        return buttonsPanel;
+        JScrollPane scrollPane = new JScrollPane(callPanel);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Floor Calls"));
+        scrollPane.setPreferredSize(new Dimension(180, 600));
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        return scrollPane;
     }
 
-    // REQUIRES: elevator fields accessible
-    // MODIFIES: this
-    // EFFECTS: creates and returns the top status panel showing
-    // current floor, direction, and requested floors
+    private JPanel createFloorCallRow(int floorNumber, int numFloors) {
+        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 2));
+        
+        JLabel label = new JLabel(String.format("F%d:", floorNumber));
+        label.setPreferredSize(new Dimension(40, 22));
+        label.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        row.add(label);
+
+        if (floorNumber < numFloors) {
+            JButton upBtn = new JButton("↑");
+            upBtn.setPreferredSize(new Dimension(50, 22));
+            upBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
+            upBtn.addActionListener(e -> handleFloorRequest(floorNumber));
+            row.add(upBtn);
+        } else {
+            row.add(Box.createRigidArea(new Dimension(50, 22)));
+        }
+
+        if (floorNumber > 1) {
+            JButton downBtn = new JButton("↓");
+            downBtn.setPreferredSize(new Dimension(50, 22));
+            downBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
+            downBtn.addActionListener(e -> handleFloorRequest(floorNumber));
+            row.add(downBtn);
+        } else {
+            row.add(Box.createRigidArea(new Dimension(50, 22)));
+        }
+
+        return row;
+    }
+
+    private JScrollPane createCabinRequestPanel(int numFloors) {
+        JPanel buttonGrid = new JPanel(new GridLayout(0, 2, 8, 8));
+        buttonGrid.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        for (int i = numFloors; i >= 1; i--) {
+            JButton floorBtn = new JButton("Floor " + i);
+            floorBtn.setFont(new Font("SansSerif", Font.PLAIN, 11));
+            floorBtn.setPreferredSize(new Dimension(80, 30));
+            int floorNumber = i;
+            floorBtn.addActionListener(e -> handleFloorRequest(floorNumber));
+            buttonGrid.add(floorBtn);
+        }
+
+        JScrollPane scrollPane = new JScrollPane(buttonGrid);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Cabin Requests"));
+        scrollPane.setPreferredSize(new Dimension(230, 600));
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        return scrollPane;
+    }
+
+    private void handleFloorRequest(int floor) {
+        elevator.addFloorRequest(floor);
+        updateRequestedFloors();
+    }
+
     private JPanel createTopPanel() {
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
+
         currentFloorLabel = new JLabel("Current Floor: " + elevator.getCurrentFloor());
-        currentFloorLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        currentFloorLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        currentFloorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         statusLabel = new JLabel("Status: " + elevator.getDirection());
-        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        statusLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         requestedFloorsLabel = new JLabel("Requested Floors: " + elevator.getRequestedFloors());
-        requestedFloorsLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        requestedFloorsLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        requestedFloorsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JPanel topPanel = new JPanel(new GridLayout(3, 1));
         topPanel.add(currentFloorLabel);
+        topPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         topPanel.add(statusLabel);
+        topPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         topPanel.add(requestedFloorsLabel);
 
         return topPanel;
     }
 
-    // REQUIRES: none
-    // MODIFIES: this
-    // EFFECTS: creates and returns a panel with Go, Save, Load, and Exit buttons;
-    // buttons trigger elevator simulation, saving, loading, or exiting
     private JPanel createControlPanel() {
-        JPanel controlPanel = new JPanel(new FlowLayout());
+        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
 
-        JButton goButton = new JButton("Go");
+        JButton goButton = new JButton("Start");
+        goButton.setFont(new Font("SansSerif", Font.BOLD, 12));
+        goButton.setPreferredSize(new Dimension(80, 30));
         goButton.addActionListener(e -> startElevatorSimulation());
 
+        JButton saveButton = new JButton("Save");
+        saveButton.setPreferredSize(new Dimension(80, 30));
+        saveButton.addActionListener(e -> saveElevator());
+
         JButton loadButton = new JButton("Load");
+        loadButton.setPreferredSize(new Dimension(80, 30));
         loadButton.addActionListener(e -> loadElevator());
 
         JButton exitButton = new JButton("Exit");
-
-        
-
-        exitButton.addActionListener(e -> System.exit(0));
-        // When clicked, print event log and exit
-        exitButton.addActionListener(e -> {
-            System.out.println("Printing Event Log:");
-            for (Event event : EventLog.getInstance()) {
-                System.out.println(event);
-            }
-            System.exit(0);
-        });
+        exitButton.setPreferredSize(new Dimension(80, 30));
+        exitButton.addActionListener(e -> exitApplication());
 
         controlPanel.add(goButton);
-        controlPanel.add(addSaveButton());
+        controlPanel.add(saveButton);
         controlPanel.add(loadButton);
         controlPanel.add(exitButton);
 
         return controlPanel;
     }
 
-    // MODIFIES: this
-    // EFFECTS: creates and returns a button that saves the current elevator state
-    private JButton addSaveButton() {
-        JButton saveButton = new JButton("Save");
-        saveButton.addActionListener(e -> {
-            try {
-                JsonWriter writer = new JsonWriter("./data/elevator.json");
-                writer.open();
-                writer.write(elevator);
-                writer.close();
-                System.out.println("Elevator saved!");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        });
-
-        return saveButton;
+    private void saveElevator() {
+        try {
+            JsonWriter writer = new JsonWriter("./data/elevator.json");
+            writer.open();
+            writer.write(elevator);
+            writer.close();
+            JOptionPane.showMessageDialog(this, 
+                "Elevator state saved successfully!",
+                "Save Complete",
+                JOptionPane.INFORMATION_MESSAGE);
+            System.out.println("Elevator saved to ./data/elevator.json");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                "Failed to save elevator state.",
+                "Save Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
     }
 
-    // REQUIRES: elevator != null
-    // MODIFIES: this.elevator, this UI labels, elevatorShaft
-    // EFFECTS: starts animated elevator movement using a timer;
-    // updates status and stops when no more requests
+    public void loadElevator() {
+        try {
+            JsonReader reader = new JsonReader("./data/elevator.json");
+            elevator = reader.read();
+            updateElevatorStatus();
+            updateRequestedFloors();
+            updateElevatorCarPosition();
+            JOptionPane.showMessageDialog(this,
+                "Elevator state loaded successfully!",
+                "Load Complete",
+                JOptionPane.INFORMATION_MESSAGE);
+            System.out.println("Elevator loaded from ./data/elevator.json");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                "Failed to load elevator state.\nFile may not exist.",
+                "Load Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void startElevatorSimulation() {
         Timer timer = new Timer(1000, e -> {
             if (!elevator.getRequestedFloors().isEmpty()) {
@@ -149,43 +213,29 @@ public class ElevatorPanel extends JPanel {
                 updateRequestedFloors();
                 updateElevatorCarPosition();
             } else {
-                ((Timer) e.getSource()).stop(); // stop when done
+                ((Timer) e.getSource()).stop();
             }
         });
         timer.start();
     }
 
-    // REQUIRES: ./data/elevator.json exists and contains valid elevator data
-    // MODIFIES: this.elevator, this UI labels
-    // EFFECTS: loads elevator state from file and updates UI;
-    // shows an error dialog if loading fails
-    public void loadElevator() {
-        try {
-            JsonReader reader = new JsonReader("./data/elevator.json");
-            elevator = reader.read(); // update the elevator reference
-            updateElevatorStatus();
-            updateRequestedFloors();
-            System.out.println("Elevator loaded!");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to load elevator state.");
+    private void exitApplication() {
+        System.out.println("\n========== Event Log ==========");
+        for (Event event : EventLog.getInstance()) {
+            System.out.println(event);
         }
+        System.out.println("===============================\n");
+        System.exit(0);
     }
 
-    // MODIFIES: elevatorShaft
-    // EFFECTS: repaints elevator shaft to reflect updated elevator position
     private void updateElevatorCarPosition() {
         elevatorShaft.repaint();
     }
 
-    // MODIFIES: requestedFloorsLabel
-    // EFFECTS: updates label showing list of requested floors
     private void updateRequestedFloors() {
         requestedFloorsLabel.setText("Requested Floors: " + elevator.getRequestedFloors());
     }
 
-    // MODIFIES: currentFloorLabel, statusLabel
-    // EFFECTS: updates UI to show elevator's current floor and direction
     private void updateElevatorStatus() {
         currentFloorLabel.setText("Current Floor: " + elevator.getCurrentFloor());
         statusLabel.setText("Status: " + elevator.getDirection());
