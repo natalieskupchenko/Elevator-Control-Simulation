@@ -1,142 +1,206 @@
-# Elevator Control Simulation 
-### By: Natalie Skupchenko
+# Elevator Control Simulation
 
-### Introduction
-You might be wondering what my motivation is for creating an elevator simulation as a project in Java, and it is a valid question. As a math student, my mind naturally wanders to asking questions in my everyday life like: *"why does this work the way it does?"* or *"how can this be optimized in a creative way to find the most efficient solution?"* 
+A Java-based elevator scheduling system that implements direction-aware request prioritization with floor call functionality, event logging, and JSON persistence.
 
-And even for something trivial like an elevator system, I found myself wondering about the criteria for how an elevator is assigned to a specific floor call. The more I followed this train of thought, I started wondering what would happen as both the number of floors and the number of elevators increased. If set a number of floors, an arbitrary amount of floor calls, and we kept adding elevators to the building, at what point would adding elevators become irrelevant? At some point, there will be enough active elevators in the system that it would be quicker for an active elevator to answer a floor than an inactive elevator. So what are the conditions in the system to have a set of permanently inactive elevators? What is the maximum number of elevators that can be active at once for a given number of floors and floor calls? Does it matter where in the building the elevators start (all at the ground floor or distributed throughout the building?).
+**Author:** Natalie Skupchenko  
+**Course:** CPSC 210 (Software Construction)  
+**Term:** September 2024 - December 2024
 
-And so, my elevator control simulation was born to further explore these questions.
+---
 
-### Program Functionality (to do for me)
-1. Fix floor requests so that before move() is called, floor requests are prioritized like this. It might be smart to separate this into HashMap or separate lists or something. 
+## Overview
 
-IDLE. We are at floor 5. 12 total floors.
-Floor req = 9.
-Floor req = 6.
-Floor req = 2.
-Floor req = 4.
-Floor req = 11.
-UP. We go to floor 6. Drop off. 
-UP. We go to floor 9. Drop off. 
-DOWN. We go to floor 4. Drop off. 
-DOWN. We go to floor 2. Drop off.
-UP. We go to floor 11. Drop off.
-IDLE.
+This project simulates an elevator control system that efficiently handles floor requests using a direction-aware priority algorithm. The system sorts requests dynamically based on the elevator's current direction (UP, DOWN, or IDLE) to minimize travel time and improve efficiency.
 
-2. Add floor call functionality so that you can press "up" or "down" from floors
+### Key Features
 
-3. Make GUI nicer - fix buttons and fix the way the elevator looks on each floor
+- **Direction-Aware Scheduling**: Requests are automatically sorted based on elevator direction
+  - Ascending order when moving UP or IDLE
+  - Descending order when moving DOWN
+- **Floor Call Functionality**: Users can call the elevator from any floor using up/down buttons
+- **Interactive GUI**: Visual representation of elevator movement through the shaft
+- **Event Logging**: Comprehensive logging of all system events (requests, movement, arrivals)
+- **JSON Persistence**: Save and load elevator state to resume simulations
+- **Multiple Interfaces**: Both console-based and GUI implementations
 
-4. Add multiple elevators. Same floor request functionality inside each of them. Difference is floor calls: if you get an call to go up from a certain floor, the elevator assigned is the one that is closest and travelling in the same direction. 
-Think about if you have something like the example above and you get a down request at 3. Would this elevator evaluate it or would another one? We'd need to do some kind of search for this. Because then it would go 6-9-4-3(pickup)-2-11. NO - because we already promised 11, so down 3 would only come AFTER 11?  Floors evaluated in terms of most recently pressed but sorted by direction.
+---
 
+## Motivation
 
+As a mathematics student interested in optimization problems, I became curious about elevator scheduling algorithms. This project explores questions such as:
 
-### JSON Persistence for Saving and Loading Elevator State 
+- What criteria determine how an elevator responds to floor calls?
+- How does the number of floors affect optimal scheduling?
+- What is the relationship between system size and response efficiency?
 
-This program uses JSON persistence to store the elevator state. When the user chooses the "Save" option, the current state of the elevator (current floor, requested floors, direction) is saved to: ./data/elevator.json
+The simulation provides a foundation for exploring these optimization questions through computational modeling.
 
-#### Example of Saved Elevator State:
-    "currentFloor": 3, 
+---
 
+## Technical Implementation
+
+### Architecture
+
+The project follows object-oriented design principles with clear separation of concerns:
+
+- **Model Layer**: `Elevator`, `Direction`, `Event`, `EventLog`
+- **Persistence Layer**: `JsonReader`, `JsonWriter`, `Writable`
+- **UI Layer**: `ElevatorApp` (console), `ElevatorAppGui`, `ElevatorPanel`, `ElevatorShaftPanel` (GUI)
+
+### Core Algorithm
+
+The elevator uses a simple but effective priority algorithm:
+
+1. When a floor request is added, it's validated (must be within building bounds, not duplicate, not current floor)
+2. The request is added to a sorted list based on current direction:
+   - **IDLE or UP**: Requests sorted in ascending order (bottom to top)
+   - **DOWN**: Requests sorted in descending order (top to bottom)
+3. The elevator moves one floor at a time toward the next requested floor
+4. Upon arrival, passengers are dropped off and the direction is updated based on remaining requests
+
+### JSON Persistence
+
+The system supports saving and loading elevator state to/from JSON files stored in `./data/elevator.json`.
+
+**Example saved state:**
+```json
+{
+    "currentFloor": 3,
     "floorsInBuilding": 10,
-
     "direction": "UP",
-
     "requestedFloors": [5, 8]
-  
+}
+```
 
-The user can later choose "Load" to restore a previously saved elevator from file and resume the elevator simulation of the selected instance at that exact state. The Elevator class implements a toJson() method so its state can be written to JSON. The JsonWriter class writes the elevator data to a file. The JsonReader class loads the elevator from JSON.
-
+Users can save their simulation state and resume later from the exact same configuration.
 
 ### Event Logging
 
-This program uses event logging to record all events during program execution and prints out the event log in the terminal after the program finishes running. 
+All system events are logged with timestamps and printed to the console when the program exits. This provides a complete audit trail of elevator behavior during the simulation.
 
-#### Example of Printed Event Log
-
+**Example log output:**
+```
 Fri Nov 28 16:49:51 PST 2025
-
 Created new elevator with 10 floors.
 
 Fri Nov 28 16:49:52 PST 2025
-
 Floor 2 requested.
 
-Fri Nov 28 16:49:53 PST 2025
-
-Floor 3 requested.
-
-Fri Nov 28 16:49:54 PST 2025
-
-Floor 5 requested.
-
 Fri Nov 28 16:49:56 PST 2025
-
 Elevator moved from floor 1 to floor 2.
 
 Fri Nov 28 16:49:57 PST 2025
-
 Elevator arrived at floor 2 and dropped off passengers.
+```
 
-Fri Nov 28 16:49:57 PST 2025
+---
 
-Elevator is moving up.
+## How to Run
 
-Fri Nov 28 16:49:58 PST 2025
+### GUI Version (Recommended)
 
-Elevator moved from floor 2 to floor 3.
+```bash
+# Compile and run the GUI application
+javac ui/Main.java
+java ui.Main
+```
 
-Fri Nov 28 16:49:59 PST 2025
+The GUI provides:
+- Visual elevator shaft with animated car movement
+- Floor request buttons for each floor
+- Real-time status display (current floor, direction, pending requests)
+- Save/Load functionality
+- Control buttons to start/stop simulation
 
-Elevator arrived at floor 3 and dropped off passengers.
+### Console Version
 
-Fri Nov 28 16:49:59 PST 2025
+```bash
+# Compile and run the console application
+javac ui/ElevatorApp.java
+java ui.ElevatorApp
+```
 
-Elevator is moving up.
+The console interface offers a text-based menu system with the same core functionality.
 
-Fri Nov 28 16:50:00 PST 2025
+---
 
-Elevator moved from floor 3 to floor 4.
+## Usage Example
 
-Fri Nov 28 16:50:01 PST 2025
+1. **Start the application** - Choose to create a new elevator or load a saved one
+2. **Set building size** - Specify the number of floors (1-200)
+3. **Request floors** - Click floor buttons or use up/down call buttons
+4. **Start simulation** - Click "Go" to watch the elevator move
+5. **Save state** - Save your current simulation to resume later
 
-Elevator moved from floor 4 to floor 5.
+---
 
-Fri Nov 28 16:50:02 PST 2025
+## Project Structure
 
-Elevator arrived at floor 5 and dropped off passengers.
+```
+.
+├── model/
+│   ├── Elevator.java              # Core elevator logic
+│   ├── Direction.java             # Enum for UP/DOWN/IDLE
+│   ├── Event.java                 # Event representation
+│   └── EventLog.java              # Singleton event logger
+├── persistence/
+│   ├── JsonReader.java            # Load elevator from JSON
+│   ├── JsonWriter.java            # Save elevator to JSON
+│   └── Writable.java              # Interface for JSON serialization
+├── ui/
+│   ├── Main.java                  # Entry point (GUI)
+│   ├── ElevatorApp.java           # Console interface
+│   ├── ElevatorAppGui.java        # Main GUI window
+│   ├── ElevatorPanel.java         # Elevator controls and display
+│   ├── ElevatorShaftPanel.java    # Visual shaft rendering
+│   ├── EnterFloorsPanel.java      # Floor input screen
+│   └── IntroPanel.java            # Welcome screen
+└── data/
+    └── elevator.json              # Saved elevator state
+```
 
-Fri Nov 28 16:50:02 PST 2025
+---
 
-Elevator is now idle.
+## Testing
 
-Fri Nov 28 16:50:04 PST 2025
+The project includes comprehensive JUnit tests covering:
 
-Floor 8 requested.
+- Elevator construction and initialization
+- Floor request validation and sorting
+- Movement logic (up, down, arrival)
+- Drop-off behavior and direction changes
+- JSON serialization and deserialization
 
-Fri Nov 28 16:50:06 PST 2025
+Run tests with:
+```bash
+# Using JUnit 5
+java -jar junit-platform-console-standalone.jar --class-path . --scan-class-path
+```
 
-Elevator moved from floor 5 to floor 6.
+---
 
-Fri Nov 28 16:50:08 PST 2025
+## Future Enhancements
 
-Elevator moved from floor 6 to floor 7.
+Potential extensions to explore:
 
-Fri Nov 28 16:50:09 PST 2025
+- **Multiple elevators**: Implement a scheduling system that assigns calls to the nearest available elevator
+- **Optimization analysis**: Compare different scheduling algorithms (FCFS, SCAN, LOOK)
+- **Performance metrics**: Track average wait time, total travel distance, idle time
+- **Advanced features**: Priority floors, express elevators, capacity limits
 
-Elevator moved from floor 7 to floor 8.
+---
 
-Fri Nov 28 16:50:10 PST 2025
+## Acknowledgements
 
-Elevator arrived at floor 8 and dropped off passengers.
+This project references and adapts code from:
 
-Fri Nov 28 16:50:10 PST 2025
+- **JsonSerializationDemo** (CPSC 210) - For JSON persistence patterns (`JsonReader`, `JsonWriter`, `Writable`)
+  - URL: https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
+- **AlarmSystem** (CPSC 210) - For event logging implementation (`Event`, `EventLog`)
+  - URL: https://github.students.cs.ubc.ca/CPSC210/AlarmSystem
 
-Elevator is now idle.
+---
 
+## License
 
-### Acknowledgements
-This project references and adapts parts of the JsonSerializationDemo from CPSC 210 for JSON persistence (JsonReader, JsonWriter, and Writable patterns).
-This project also references and adapts code from CPSC 210 AlarmSystem. URL: https://github.students.cs.ubc.ca/CPSC210/AlarmSystem
+Academic project for CPSC 210 at the University of British Columbia.
