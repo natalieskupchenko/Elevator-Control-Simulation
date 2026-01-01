@@ -12,6 +12,10 @@ A Java-based elevator scheduling system implementing direction-aware request pri
 
 This project simulates an elevator control system that efficiently handles floor requests using a direction-aware priority algorithm. The system sorts requests dynamically based on the elevator's current direction (UP, DOWN, or IDLE) to minimize travel time and improve efficiency.
 
+**Why This Project?**
+This simulation was built to explore optimization and scheduling problems through software. As a mathematics student interested in systems and algorithms, I used this project to model real-world trade-offs in request prioritization, efficiency, and system state management.
+
+
 ### Key Features
 
 - **Direction-Aware Scheduling**: Requests are automatically prioritized based on elevator direction
